@@ -86,7 +86,7 @@ export const useSrsStore = defineStore("srs", {
       const DAY = 1000 * 60 * 60 * 24;
 
       // Update history
-      this.reviewHistory[dateKey] = (this.reviewHistory[dateKey] ?? 0) + 1;
+      this.reviewHistory[dateKey!] = (this.reviewHistory[dateKey!] ?? 0) + 1;
 
       let { repetition = 0, interval = 0, easeFactor = 2.5 } = entry;
 

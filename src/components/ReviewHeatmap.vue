@@ -17,10 +17,12 @@ const dates = computed(() => {
         const d = new Date(today);
         d.setDate(d.getDate() - i);
         const key = d.toISOString().split('T')[0];
-        res.push({
+        if (key) {
+          res.push({
             date: key,
             count: props.data[key] ?? 0
-        });
+          });
+        }
     }
     return res;
 });
@@ -41,12 +43,12 @@ function getTitle(date: string, count: number) {
 <template>
     <div class="flex flex-col gap-2">
         <div class="flex flex-wrap gap-1">
-            <div v-for="d in dates" :key="d.date" :title="getTitle(d.date, d.count)"
+            <div v-for="d in dates" :key="d.date" :title="getTitle(d.date!, d.count)"
                 class="w-3 h-3 rounded-sm transition-colors" :class="getColor(d.count)">
             </div>
         </div>
         <div class="flex justify-between text-[10px] text-muted-foreground px-1">
-            <span>{{ dates[0].date }}</span>
+            <span>{{ dates[0]!.date }}</span>
             <span>Today</span>
         </div>
     </div>

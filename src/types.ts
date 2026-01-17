@@ -66,7 +66,8 @@ export type AlphabetVariant =
   | "sound"
   | "class"
   | "live_dead"
-  | "length";
+  | "length"
+  | "writing";
 
 export type StudyVariant = WordVariant | AlphabetVariant;
 

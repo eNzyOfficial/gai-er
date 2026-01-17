@@ -8,7 +8,6 @@ import Header from "@/components/Header.vue";
 import CollectionCard from "@/components/CollectionCard.vue";
 import ActionCard from "@/components/ActionCard.vue";
 import ReviewHeatmap from "@/components/ReviewHeatmap.vue";
-import { parseStudyItemId } from "@/lib/parseStudyItemId";
 
 const router = useRouter();
 const vocab = useVocabularyStore();

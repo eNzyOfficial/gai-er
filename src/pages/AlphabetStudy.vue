@@ -17,6 +17,13 @@ const reviewCount = computed(() =>
     srs.dueIds.filter(id => parseStudyItemId(id).entityType === "alphabet").length
 );
 
+const writingReviewCount = computed(() =>
+    srs.dueIds.filter(id => {
+        const item = parseStudyItemId(id);
+        return item.entityType === "alphabet" && item.variant === "writing";
+    }).length
+);
+
 const getGroupReviewCount = (group: "consonant" | "vowel" | "class" | "live_dead" | "length") => {
     const variant = alphabetGroupToVariant(group);
     const chars = alphabet.group(group);
@@ -49,6 +56,12 @@ function goToReview() {
                 </div>
             </template>
         </ActionCard>
+
+        <h1 class="text-xl font-semibold">Writing</h1>
+
+        <ActionCard title="Writing Practice" description="Practice writing characters and track your progress."
+            :badge="writingReviewCount ? `${writingReviewCount} due` : undefined" variant="primary"
+            @click="router.push({ name: 'alphabet.writing' })" />
 
         <h1 class="text-xl font-semibold">Characters</h1>
 

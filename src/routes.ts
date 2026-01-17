@@ -26,6 +26,11 @@ const routes = [
     component: () => import("@/pages/AlphabetStudy.vue"),
   },
   {
+    path: "/alphabet/writing",
+    name: "alphabet.writing",
+    component: () => import("@/pages/WritingPractice.vue"),
+  },
+  {
     path: "/tone-calculator",
     name: "tone.calculator",
     component: () => import("@/pages/ToneCalculator.vue"),
