@@ -28,6 +28,13 @@ const newWords = computed(() =>
     })
 );
 
+const masteredCount = computed(() =>
+    vocab.words.filter(word => {
+        const id = makeStudyItem("word", word.id, WORD_VARIANT).id;
+        return srs.getMastery(id) === 'mastered';
+    }).length
+);
+
 function goToReview() {
     if (!reviewCount.value) return;
     router.push({ name: "words.study.review" });
@@ -64,6 +71,11 @@ function goToCollection(id: string) {
 
         <ActionCard title="New Words" description="Words you haven’t studied yet. Start small and build over time."
             :badge="`${newWords.length} new`" :disabled="!newWords.length" variant="primary" @click="goToNew" />
+
+        <div v-if="masteredCount" class="flex items-center gap-2 px-1 text-sm text-muted-foreground">
+            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+            <span>{{ masteredCount }} words mastered</span>
+        </div>
 
         <!-- Collections -->
         <div class="flex flex-col gap-4">
