@@ -3,8 +3,8 @@ import { computed, ref } from "vue";
 import { useAlphabetStore } from "@/stores/alphabet";
 import { useSrsStore } from "@/stores/srs";
 import { studyItemId } from "@/lib/studyItemId";
-import Header from "@/components/Header.vue";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Page from "@/components/page/Page.vue";
 
 type GroupBy = "class" | "live_dead" | "length";
 
@@ -53,10 +53,10 @@ const grouped = computed(() => {
 </script>
 
 <template>
-    <div class="h-screen flex flex-col">
-        <Header title="Character Groups" back-to="overview" />
+    <Page title="Character Groups" withBack>
+        <template #header />
 
-        <div class="grow p-6 flex flex-col gap-6">
+        <div class="grow p-4 flex flex-col gap-4 h-full">
 
             <Tabs v-model="groupBy">
                 <TabsList>
@@ -85,5 +85,5 @@ const grouped = computed(() => {
             </div>
 
         </div>
-    </div>
+    </Page>
 </template>

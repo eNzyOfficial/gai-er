@@ -3,10 +3,10 @@ import { ref, computed, watch } from "vue";
 import { useAlphabetStore } from "@/stores/alphabet";
 import { useSrsStore } from "@/stores/srs";
 import { studyItemId } from "@/lib/studyItemId";
-import Header from "@/components/Header.vue";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import InfoRow from "@/components/InfoRow.vue";
+import Page from "@/components/page/Page.vue";
 
 const filter = ref<"mark" | "consonant" | "vowel" | "number">("consonant");
 const alphabet = useAlphabetStore();
@@ -34,9 +34,10 @@ function getMasteryColor(char: string) {
 </script>
 
 <template>
-    <div class="h-screen flex flex-col">
-        <Header title="Character Browser" back-to="overview" />
-        <div class="grow p-6 flex flex-col gap-4">
+    <Page title="Character Browser" withBack>
+        <template #header />
+
+        <div class="grow p-4 flex flex-col gap-4 h-full">
             <Tabs v-model="filter">
                 <TabsList>
                     <TabsTrigger value="consonant">Consonants</TabsTrigger>
@@ -46,11 +47,9 @@ function getMasteryColor(char: string) {
                 </TabsList>
             </Tabs>
 
-            <div
-                class="flex-1 p-4 border rounded flex flex-col gap-4 items-center justify-center relative overflow-hidden">
-
+            <div class="flex-1 border rounded flex flex-col gap-4 items-center justify-center xs:p-4 p-4 pt-0">
                 <div class="flex-1 flex flex-col gap-2 justify-center">
-                    <div class="relative group">
+                    <div>
                         <h2 class="text-6xl sm:text-8xl font-semibold text-center leading-none">
                             {{ currentCard?.character }}
                         </h2>
@@ -62,7 +61,7 @@ function getMasteryColor(char: string) {
 
                 <Separator />
 
-                <div class="flex gap-6 items-center justify-between py-6">
+                <div class="flex gap-6 items-center justify-between py-0 sm:py-6">
                     <div class="grow flex flex-col space-y-2 text-center p-6 border rounded-md">
                         <div class="text-sm sm:text-lg">
                             {{ currentCard?.example }}
@@ -101,17 +100,17 @@ function getMasteryColor(char: string) {
                 </div>
             </div>
 
-            <div class="grid grid-cols-9 sm:grid-cols-9 md:grid-cols-12 gap-1 text-xs">
+            <div class="grid grid-cols-7 sm:grid-cols-7 md:grid-cols-12 gap-1 text-xs">
                 <div v-for="(card, index) in filteredCards" :key="card.character"
                     class="relative cursor-pointer p-2 border text-center rounded" :class="{
                         'bg-slate-900 text-white': selectedCardIndex === index,
                         'bg-card': selectedCardIndex !== index
                     }" @click="selectedCardIndex = index">
                     {{ card.character }}
-                    <div class="absolute bottom-0.5 right-0.5 w-1.5 h-1.5 rounded-full"
+                    <div class="absolute bottom-0.5 right-0.5 w-1 h-1 rounded-full"
                         :class="getMasteryColor(card.character)"></div>
                 </div>
             </div>
         </div>
-    </div>
+    </Page>
 </template>

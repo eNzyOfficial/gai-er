@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 import { useVocabularyStore } from "@/stores/vocabulary";
 import { useSrsStore } from "@/stores/srs";
 import { makeStudyItem } from "@/lib/makeStudyItem";
-import Header from "@/components/Header.vue";
+import Header from "@/components/Headerr.vue";
 import CollectionCard from "@/components/CollectionCard.vue";
 import ActionCard from "@/components/ActionCard.vue";
 import ReviewHeatmap from "@/components/ReviewHeatmap.vue";

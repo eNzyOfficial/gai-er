@@ -4,6 +4,9 @@ import ReviewHeatmap from '@/components/ReviewHeatmap.vue';
 import { useVocabularyStore } from '@/stores/vocabulary'
 import { useSrsStore } from '@/stores/srs'
 import { useRouter } from "vue-router";
+import Page from '@/components/page/Page.vue';
+import { Award, Flame, User } from 'lucide-vue-next';
+import { Button } from '@/components/ui/button';
 
 const vocab = useVocabularyStore()
 const srs = useSrsStore()
@@ -11,44 +14,54 @@ const router = useRouter()
 </script>
 
 <template>
-    <div class="flex flex-col space-y-4 p-4 pb-12">
-        <h1 class="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">ไก่เอ๋อ</h1>
+    <Page>
+        <template #header>
+            <header class="bg-background p-2 flex items-center">
 
-        <div class="bg-card border rounded-xl p-4 space-y-3">
-            <h2 class="text-sm font-medium text-muted-foreground">Activity</h2>
-            <ReviewHeatmap :data="srs.reviewHistory" :days="70" />
-        </div>
+                <div class="flex space-x-2">
+                    <Button as-child>
+                        <RouterLink :to="{ name: 'awards' }" class="flex items-center">
+                            <Award />
+                            <span>1</span>
+                        </RouterLink>
+                    </Button>
 
-        <div class="flex flex-col space-y-1 ">
-            <h1 class="text-xl font-semibold">Alphabet</h1>
-        </div>
+                    <Button variant="outline" as-child>
+                        <RouterLink :to="{ name: 'streak' }" class="flex items-center">
+                            <Flame class="text-amber-500" />
+                            <span>1</span>
+                        </RouterLink>
+                    </Button>
+                </div>
 
-        <ActionCard title="Character Browser" description="See details about specific characters." variant="secondary"
-            @click="router.push({ name: 'alphabet.browser' })" />
+                <div class="flex-1 text-center text-sm font-medium truncate">
+                    <h1 class="text-xl font-semibold text-gray-800">ไก่เอ๋อ</h1>
+                </div>
 
-        <ActionCard title="Character Groups" description="See how characters are grouped together." variant="secondary"
-            @click="router.push({ name: 'alphabet.grouped' })" />
+                <div class="flex space-x-4 justify-end">
+                    <Button variant="ghost" as-child>
+                        <RouterLink :to="{ name: 'profile' }" class="flex items-center">
+                            <User />
+                        </RouterLink>
+                    </Button>
+                </div>
+            </header>
+        </template>
 
-        <ActionCard title="Character Flashcards" description="Study characters and their groupings." variant="secondary"
-            @click="router.push({ name: 'alphabet.study' })" />
+        <div class="flex flex-col space-y-4 p-4">
+            <div class="bg-card border rounded-xl p-4 space-y-3">
+                <h2 class="text-sm font-medium text-muted-foreground">Activity</h2>
+                <ReviewHeatmap :data="srs.reviewHistory" :days="70" />
+            </div>
 
-        <ActionCard title="Writing Practice" description="Practice writing Thai characters." variant="secondary"
-            @click="router.push({ name: 'alphabet.writing' })" />
-
-        <ActionCard title="Tone Rule Calculator" description="Explain tone rules for any Thai word." variant="secondary"
-            @click="router.push({ name: 'tone.calculator' })" />
-
-        <div class="flex flex-col space-y-1">
-            <h1 class="text-xl font-semibold">Words</h1>
-        </div>
-
-        <ActionCard :title="`Word Bank (${vocab.words.length})`" description="Manage words that you'd
+            <ActionCard :title="`Word Bank (${vocab.words.length})`" description="Manage words that you'd
                 like to practice." variant="primary" @click="router.push({ name: 'words' })" />
 
-        <ActionCard title="Word Flashcards" description="Study words from the word bank."
-            :badge="srs.dailyReviewItems.length ? `${srs.dailyReviewItems.length} due` : undefined" variant="secondary"
-            @click="router.push({ name: 'words.study' })" />
-    </div>
+            <ActionCard title="Word Flashcards" description="Study words from the word bank."
+                :badge="srs.dailyReviewItems.length ? `${srs.dailyReviewItems.length} due` : undefined"
+                variant="secondary" @click="router.push({ name: 'words.study' })" />
+        </div>
 
-
+        <template #footer />
+    </Page>
 </template>
