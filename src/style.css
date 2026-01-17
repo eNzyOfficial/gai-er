@@ -117,4 +117,11 @@
   body {
     @apply bg-background text-foreground;
   }
+  html,
+  body {
+    html,
+    body {
+      height: 100%;
+    }
+  }
 }
