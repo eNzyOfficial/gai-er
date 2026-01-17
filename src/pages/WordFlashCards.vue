@@ -5,7 +5,7 @@ import { useVocabularyStore } from "@/stores/vocabulary";
 import { useAlphabetStore } from "@/stores/alphabet";
 import { useSrsStore } from "@/stores/srs";
 import SessionSummary from "@/components/SessionSummary.vue";
-import Header from "@/components/Header.vue";
+import Header from "@/components/Headerr.vue";
 import Flashcard from "@/components/Flashcard.vue";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

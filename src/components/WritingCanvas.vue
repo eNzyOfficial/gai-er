@@ -33,24 +33,24 @@ const getPos = (e: MouseEvent | TouchEvent) => {
 };
 
 const startDrawing = (e: MouseEvent | TouchEvent) => {
-  if (!props.canDraw) return;
+    if (!props.canDraw) return;
     isDrawing.value = true;
     lastPos.value = getPos(e);
-    
+
     // Save state for undo
     saveState();
 };
 
 const draw = (e: MouseEvent | TouchEvent) => {
     if (!isDrawing.value || !canvasRef.value) return;
-    
+
     const ctx = canvasRef.value.getContext('2d');
     if (!ctx) return;
 
     // Set stroke color based on theme if not provided
     const isDark = document.documentElement.classList.contains('dark');
     ctx.strokeStyle = props.strokeColor || (isDark ? '#ffffff' : '#000000');
-    
+
     const currentPos = getPos(e);
 
     ctx.beginPath();
@@ -88,7 +88,7 @@ const saveState = () => {
 
 const undo = () => {
     if (!canvasRef.value || history.value.length === 0) return;
-    
+
     const ctx = canvasRef.value.getContext('2d');
     if (!ctx) return;
 
@@ -129,7 +129,7 @@ defineExpose({ clear, undo });
 <template>
     <div class="relative w-full h-full border rounded-md bg-white dark:bg-slate-950 overflow-hidden group">
         <div v-if="placeholder"
-            class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 select-none text-[20em] font-bold text-black dark:text-white transition-opacity duration-300"
+            class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 select-none text-[12em] sm:text-[17em] font-bold text-black dark:text-white transition-opacity duration-300"
             :class="{ 'opacity-5 dark:opacity-10': hintActive }">
             {{ placeholder }}
         </div>

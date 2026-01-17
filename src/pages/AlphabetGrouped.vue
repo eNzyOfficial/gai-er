@@ -3,7 +3,7 @@ import { computed, ref } from "vue";
 import { useAlphabetStore } from "@/stores/alphabet";
 import { useSrsStore } from "@/stores/srs";
 import { studyItemId } from "@/lib/studyItemId";
-import Header from "@/components/Header.vue";
+import Header from "@/components/Headerr.vue";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type GroupBy = "class" | "live_dead" | "length";

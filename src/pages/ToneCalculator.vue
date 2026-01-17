@@ -2,7 +2,7 @@
 import { ref, computed } from "vue";
 import { useAlphabetStore } from "@/stores/alphabet";
 import { analyzeTone } from "@/lib/toneCalculator";
-import Header from "@/components/Header.vue";
+import Header from "@/components/Headerr.vue";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

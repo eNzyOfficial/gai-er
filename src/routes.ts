@@ -75,6 +75,26 @@ const routes = [
       collectionId: route.params.collectionId,
     }),
   },
+  {
+    path: "/profile",
+    name: "profile",
+    component: () => import("@/pages/Profile.vue"),
+  },
+  {
+    path: "/profile/settings",
+    name: "profile.settings",
+    component: () => import("@/pages/Profile.vue"),
+  },
+  {
+    path: "/awards",
+    name: "awards",
+    component: () => import("@/pages/Awards.vue"),
+  },
+  {
+    path: "/streak",
+    name: "streak",
+    component: () => import("@/pages/Streak.vue"),
+  },
 ];
 
 export const router = createRouter({

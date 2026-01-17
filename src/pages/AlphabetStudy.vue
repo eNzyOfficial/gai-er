@@ -5,7 +5,7 @@ import { useSrsStore } from "@/stores/srs";
 import { useAlphabetStore } from "@/stores/alphabet";
 import { parseStudyItemId } from "@/lib/parseStudyItemId";
 import { alphabetGroupToVariant } from "@/lib/alphabetGroupToVariant";
-import Header from "@/components/Header.vue";
+import Header from "@/components/Headerr.vue";
 import ActionCard from "@/components/ActionCard.vue";
 import ReviewHeatmap from "@/components/ReviewHeatmap.vue";
 
