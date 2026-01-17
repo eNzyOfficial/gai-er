@@ -10,7 +10,7 @@ import WritingCanvas from "@/components/WritingCanvas.vue";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import SessionSummary from "@/components/SessionSummary.vue";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 const alphabet = useAlphabetStore();
 const srs = useSrsStore();
@@ -227,32 +227,34 @@ onUnmounted(() => {
 
                 <!-- Draw / Review Phase -->
                 <div v-else class="flex-1 flex flex-col gap-4 min-h-0">
-                    <div class="flex-1 flex gap-4 min-h-0">
-                        <Card class="flex-1 min-h-0 relative overflow-hidden">
-                            <CardContent class="h-full p-0">
-                                <WritingCanvas 
-                                    ref="canvasRef"
-                                    :placeholder="hintActive ? cleanAnswer : undefined" 
-                                    :hint-active="hintActive"
-                                    show-controls
-                                />
-                            </CardContent>
-                            <!-- Context info in Draw phase -->
-                            <div v-if="phase === 'draw'" class="absolute top-3 left-3 pointer-events-none space-y-1">
-                                <component v-if="typeof currentCard.prompt !== 'string'" :is="currentCard.prompt" />
-                                <div v-else class="text-xl font-bold">{{ cleanPrompt }}</div>
-                            </div>
-                        </Card>
-
-                        <!-- Side-by-side Answer in Review phase -->
-                        <div v-if="phase === 'review'" class="w-1/3 flex flex-col gap-4">
-                            <Card class="flex-1 flex items-center justify-center bg-muted/30">
-                                <div class="text-8xl font-bold text-primary">{{ currentCard.answer }}</div>
-                            </Card>
-                        </div>
+                  <div class="flex-1 flex gap-4 min-h-0">
+                    <div class="flex-1 min-h-0 relative overflow-hidden">
+                      <div class="h-full">
+                        <WritingCanvas
+                            ref="canvasRef"
+                            :placeholder="hintActive ? cleanAnswer : undefined"
+                            :hint-active="hintActive && phase === 'draw'"
+                            :show-controls="phase === 'draw'"
+                            :can-draw="phase === 'draw'"
+                        />
+                      </div>
+                      <!-- Context info in Draw phase -->
+                      <div v-if="phase === 'draw'" class="absolute top-5 left-5 pointer-events-none space-y-1">
+                        <component v-if="typeof currentCard.prompt !== 'string'" :is="currentCard.prompt" />
+                        <div v-else class="text-xl font-bold">{{ cleanPrompt }}</div>
+                      </div>
                     </div>
 
-                    <div class="space-y-2">
+                    <!-- Side-by-side Answer in Review phase -->
+                    <div v-if="phase === 'review'" class="flex-1 flex flex-col gap-4">
+                      <Card class="flex-1 flex items-center justify-center bg-muted/30">
+                        <div class="text-[20rem] font-bold text-primary">{{ currentCard.answer }}</div>
+                      </Card>
+                    </div>
+                  </div>
+
+
+                  <div class="space-y-2">
                         <!-- Draw Controls -->
                         <div v-if="phase === 'draw'" class="flex gap-2">
                             <Button size="lg" variant="outline" @click="playAudio" title="Play Audio" class="px-3">

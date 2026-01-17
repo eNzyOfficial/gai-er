@@ -2,7 +2,6 @@
 import { useStudyStore } from "@/stores/study";
 import type { Flashcard } from "@/types";
 import { Separator } from "@/components/ui/separator";
-import WritingCanvas from "@/components/WritingCanvas.vue";
 import { Pencil } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { ref, watch } from "vue";
@@ -22,16 +21,6 @@ watch(() => props.card.id, () => {
 <template>
     <div class="flex flex-col items-center justify-center text-center px-6 gap-6 transition-colors duration-200 w-full h-full relative"
         :data-kind="card.kind">
-        <!-- Writing Canvas Overlay -->
-        <div v-if="showCanvas" class="absolute inset-0 z-10 p-4 bg-background flex flex-col gap-2">
-            <div class="flex-1 min-h-0">
-                <WritingCanvas :placeholder="typeof card.prompt === 'string' ? card.prompt : undefined" />
-            </div>
-            <Button variant="outline" size="sm" class="w-full" @click="showCanvas = false">
-                Close Canvas
-            </Button>
-        </div>
-
         <!-- Prompt -->
         <div class="space-y-2 relative group">
             <div class="text-5xl font-semibold tracking-tight">

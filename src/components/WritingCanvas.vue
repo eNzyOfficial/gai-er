@@ -11,6 +11,7 @@ const props = defineProps<{
     placeholder?: string;
     showControls?: boolean;
     hintActive?: boolean;
+    canDraw: boolean;
 }>();
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
@@ -32,6 +33,7 @@ const getPos = (e: MouseEvent | TouchEvent) => {
 };
 
 const startDrawing = (e: MouseEvent | TouchEvent) => {
+  if (!props.canDraw) return;
     isDrawing.value = true;
     lastPos.value = getPos(e);
     
@@ -125,9 +127,9 @@ defineExpose({ clear, undo });
 </script>
 
 <template>
-    <div class="relative w-full h-full border rounded-lg bg-white dark:bg-slate-950 overflow-hidden group">
+    <div class="relative w-full h-full border rounded-md bg-white dark:bg-slate-950 overflow-hidden group">
         <div v-if="placeholder"
-            class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 select-none text-9xl font-bold text-black dark:text-white transition-opacity duration-300"
+            class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 select-none text-[20em] font-bold text-black dark:text-white transition-opacity duration-300"
             :class="{ 'opacity-5 dark:opacity-10': hintActive }">
             {{ placeholder }}
         </div>
@@ -137,8 +139,8 @@ defineExpose({ clear, undo });
             @touchmove.prevent="draw" @touchend.prevent="stopDrawing"
             class="block w-full h-full cursor-crosshair touch-none relative z-10"></canvas>
 
-        <div class="absolute bottom-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
-            :class="{ 'opacity-100': showControls }">
+        <div class="absolute bottom-2 right-2 flex gap-2 opacity-0 transition-opacity z-10"
+            :class="{ 'opacity-100 group-hover:opacity-100': showControls }">
             <Button variant="outline" size="icon" @click="undo" title="Undo">
                 <Undo2 class="w-4 h-4" />
             </Button>

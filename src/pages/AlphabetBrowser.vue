@@ -7,16 +7,10 @@ import Header from "@/components/Header.vue";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import InfoRow from "@/components/InfoRow.vue";
-import WritingCanvas from "@/components/WritingCanvas.vue";
-import { Pencil } from "lucide-vue-next";
-import { Button } from "@/components/ui/button";
 
 const filter = ref<"mark" | "consonant" | "vowel" | "number">("consonant");
 const alphabet = useAlphabetStore();
 const srs = useSrsStore();
-
-const showCanvas = ref(false);
-const canvasRef = ref<InstanceType<typeof WritingCanvas> | null>(null);
 
 const filteredCards = computed(() => alphabet.cards.filter(c => c.type === filter.value)
 );
@@ -27,12 +21,7 @@ const currentCard = computed(() =>
 );
 
 watch(filter, () => {
-  selectedCardIndex.value = 0;
-  canvasRef.value?.clear();
-});
-
-watch(() => selectedCardIndex.value, () => {
-  canvasRef.value?.clear();
+    selectedCardIndex.value = 0;
 });
 
 function getMasteryColor(char: string) {
@@ -57,30 +46,14 @@ function getMasteryColor(char: string) {
                 </TabsList>
             </Tabs>
 
-            <div class="flex-1 p-4 border rounded flex flex-col gap-4 items-center justify-center relative overflow-hidden">
-                <div v-if="showCanvas" class="absolute inset-0 z-10 p-4 bg-background">
-                    <WritingCanvas ref="canvasRef" :placeholder="currentCard?.character" />
-                    <Button variant="ghost" size="icon" class="absolute top-2 right-2 z-20" @click="showCanvas = false">
-                        <span class="sr-only">Close Canvas</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-x">
-                            <path d="M18 6 6 18" />
-                            <path d="m6 6 12 12" />
-                        </svg>
-                    </Button>
-                </div>
+            <div
+                class="flex-1 p-4 border rounded flex flex-col gap-4 items-center justify-center relative overflow-hidden">
 
                 <div class="flex-1 flex flex-col gap-2 justify-center">
                     <div class="relative group">
                         <h2 class="text-6xl sm:text-8xl font-semibold text-center leading-none">
                             {{ currentCard?.character }}
                         </h2>
-                        <Button variant="outline" size="icon"
-                            class="absolute -top-4 -right-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                            @click="showCanvas = true" title="Practice Writing">
-                            <Pencil class="w-4 h-4" />
-                        </Button>
                     </div>
                     <p class="text-muted-foreground text-xs sm:text-sm text-center">
                         {{ currentCard?.name }}
@@ -119,7 +92,8 @@ function getMasteryColor(char: string) {
                             <div class="flex items-center gap-2">
                                 <div class="w-2 h-2 rounded-full" :class="getMasteryColor(currentCard!.character)">
                                 </div>
-                                <span class="capitalize">{{ srs.getMastery(studyItemId('alphabet', currentCard!.character,
+                                <span class="capitalize">{{ srs.getMastery(studyItemId('alphabet',
+                                    currentCard!.character,
                                     'sound')) }}</span>
                             </div>
                         </div>
