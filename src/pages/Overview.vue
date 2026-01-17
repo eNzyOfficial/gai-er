@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import ActionCard from '@/components/ActionCard.vue';
-import { useSrsStore } from '@/stores/srs';
 import { useVocabularyStore } from '@/stores/vocabulary'
 import { useRouter } from "vue-router";
 
 const vocab = useVocabularyStore()
-const srs = useSrsStore()
 const router = useRouter()
 </script>
 

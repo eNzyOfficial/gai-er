@@ -22,7 +22,7 @@ import { useWordList } from '@/composables/useWordList'
 import Header from '@/components/Header.vue'
 
 type SortMode = 'smart' | 'newest' | 'alpha'
-const confidenceLabels = ['Low', 'Medium', 'High']
+// const confidenceLabels = ['Low', 'Medium', 'High']
 
 const sortMode = ref<SortMode>('smart')
 const search = ref('')

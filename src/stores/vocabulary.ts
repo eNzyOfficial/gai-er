@@ -71,7 +71,7 @@ export const useVocabularyStore = defineStore("vocabulary", {
         let dueToday = 0;
 
         for (const word of words) {
-          const s = srs.get("word", word.id);
+          const s = srs.get(word.id);
           if (!s) continue;
 
           studied++;
@@ -111,7 +111,7 @@ export const useVocabularyStore = defineStore("vocabulary", {
 
       this.words = this.words.filter((w) => w.id !== id);
 
-      srs.delete("word", id);
+      srs.delete(id);
 
       this.save();
     },

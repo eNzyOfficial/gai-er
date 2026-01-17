@@ -39,10 +39,10 @@ const currentCard = computed(() =>
             <div class="flex-1 p-4 border rounded flex flex-col gap-4 items-center justify-center">
                 <div class="flex-1 flex flex-col gap-2 justify-center">
                     <h2 class="text-6xl sm:text-8xl font-semibold text-center leading-none">
-                        {{ currentCard.character }}
+                        {{ currentCard?.character }}
                     </h2>
                     <p class="text-muted-foreground text-xs sm:text-sm text-center">
-                        {{ currentCard.name }}
+                        {{ currentCard?.name }}
                     </p>
                 </div>
 
@@ -59,20 +59,20 @@ const currentCard = computed(() =>
                     </div>
 
                     <div class="space-y-3 text-xs sm:text-sm">
-                        <InfoRow label="Type" :value="currentCard.type" />
+                        <InfoRow label="Type" :value="currentCard!.type" />
 
                         <InfoRow v-if="currentCard?.class" label="Class" :value="currentCard.class" />
 
                         <InfoRow v-if="currentCard?.ipa" label="IPA" :value="currentCard.ipa" />
 
                         <InfoRow v-if="currentCard?.is_live ?? null !== null" label="Live / Dead"
-                            :value="currentCard.is_live ? 'Live' : 'Dead'" />
+                            :value="currentCard?.is_live ? 'Live' : 'Dead'" />
 
                         <InfoRow v-if="currentCard?.is_short ?? null !== null" label="Length"
-                            :value="currentCard.is_short ? 'Short' : 'Long'" />
+                            :value="currentCard?.is_short ? 'Short' : 'Long'" />
 
                         <InfoRow v-if="currentCard?.final_consonant ?? null !== null" label="Final Consonant"
-                            :value="currentCard.final_consonant" />
+                            :value="currentCard?.final_consonant!" />
                     </div>
                 </div>
             </div>
