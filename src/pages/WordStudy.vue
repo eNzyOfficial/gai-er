@@ -7,6 +7,7 @@ import { makeStudyItem } from "@/lib/makeStudyItem";
 import Header from "@/components/Header.vue";
 import CollectionCard from "@/components/CollectionCard.vue";
 import ActionCard from "@/components/ActionCard.vue";
+import ReviewHeatmap from "@/components/ReviewHeatmap.vue";
 import { parseStudyItemId } from "@/lib/parseStudyItemId";
 
 const router = useRouter();
@@ -53,7 +54,13 @@ function goToCollection(id: string) {
         <!-- Review Button -->
         <ActionCard title="Daily Review" description="Words you’ve studied before and are scheduled for review today."
             :badge="reviewCount ? `${reviewCount} due` : undefined" :disabled="!reviewCount" variant="secondary"
-            @click="goToReview" />
+            @click="goToReview">
+            <template #footer v-if="srs.reviewHistory">
+                <div class="mt-4 pt-4 border-t">
+                    <ReviewHeatmap :data="srs.reviewHistory" :days="30" />
+                </div>
+            </template>
+        </ActionCard>
 
         <ActionCard title="New Words" description="Words you haven’t studied yet. Start small and build over time."
             :badge="`${newWords.length} new`" :disabled="!newWords.length" variant="primary" @click="goToNew" />

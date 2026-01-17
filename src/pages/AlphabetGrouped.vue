@@ -1,13 +1,24 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useAlphabetStore } from "@/stores/alphabet";
+import { useSrsStore } from "@/stores/srs";
+import { studyItemId } from "@/lib/studyItemId";
 import Header from "@/components/Header.vue";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type GroupBy = "class" | "live_dead" | "length";
 
 const alphabet = useAlphabetStore();
+const srs = useSrsStore();
 const groupBy = ref<GroupBy>("class");
+
+function getMasteryColor(char: string) {
+    const id = studyItemId('alphabet', char, 'sound');
+    const mastery = srs.getMastery(id);
+    if (mastery === 'mastered') return 'bg-emerald-500';
+    if (mastery === 'learning') return 'bg-blue-400';
+    return 'bg-slate-200 dark:bg-slate-700';
+}
 
 /**
  * Only consonants for now.
@@ -64,8 +75,10 @@ const grouped = computed(() => {
 
                     <div class="grid grid-cols-6 gap-1">
                         <div v-for="card in cards" :key="card.character"
-                            class="cursor-pointer p-2 border rounded text-center">
+                            class="relative cursor-pointer p-2 border rounded text-center bg-card">
                             {{ card.character }}
+                            <div class="absolute bottom-0.5 right-0.5 w-1 h-1 rounded-full"
+                                :class="getMasteryColor(card.character)"></div>
                         </div>
                     </div>
                 </div>

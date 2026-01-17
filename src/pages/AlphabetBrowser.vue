@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
 import { useAlphabetStore } from "@/stores/alphabet";
+import { useSrsStore } from "@/stores/srs";
+import { studyItemId } from "@/lib/studyItemId";
 import Header from "@/components/Header.vue";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
@@ -8,6 +10,7 @@ import InfoRow from "@/components/InfoRow.vue";
 
 const filter = ref<"mark" | "consonant" | "vowel" | "number">("consonant");
 const alphabet = useAlphabetStore();
+const srs = useSrsStore();
 
 watch(filter, () => {
     selectedCardIndex.value = 0;
@@ -21,6 +24,13 @@ const currentCard = computed(() =>
     filteredCards.value[selectedCardIndex.value ?? 0]
 );
 
+function getMasteryColor(char: string) {
+    const id = studyItemId('alphabet', char, 'sound');
+    const mastery = srs.getMastery(id);
+    if (mastery === 'mastered') return 'bg-emerald-500';
+    if (mastery === 'learning') return 'bg-blue-400';
+    return 'bg-slate-200 dark:bg-slate-700';
+}
 </script>
 
 <template>
@@ -73,16 +83,28 @@ const currentCard = computed(() =>
 
                         <InfoRow v-if="currentCard?.final_consonant ?? null !== null" label="Final Consonant"
                             :value="currentCard?.final_consonant!" />
+
+                        <div class="pt-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full" :class="getMasteryColor(currentCard!.character)">
+                                </div>
+                                <span class="capitalize">{{ srs.getMastery(studyItemId('alphabet', currentCard!.character,
+                                    'sound')) }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-9 sm:grid-cols-9 md:grid-cols-12 gap-1 text-xs">
                 <div v-for="(card, index) in filteredCards" :key="card.character"
-                    class="cursor-pointer p-2 border text-center rounded" :class="{
-                        'bg-slate-900 text-white': selectedCardIndex === index
-                    }" @click="selectedCardIndex = index"> {{
-                        card.character }}
+                    class="relative cursor-pointer p-2 border text-center rounded" :class="{
+                        'bg-slate-900 text-white': selectedCardIndex === index,
+                        'bg-card': selectedCardIndex !== index
+                    }" @click="selectedCardIndex = index">
+                    {{ card.character }}
+                    <div class="absolute bottom-0.5 right-0.5 w-1.5 h-1.5 rounded-full"
+                        :class="getMasteryColor(card.character)"></div>
                 </div>
             </div>
         </div>

@@ -7,6 +7,7 @@ import { parseStudyItemId } from "@/lib/parseStudyItemId";
 import { alphabetGroupToVariant } from "@/lib/alphabetGroupToVariant";
 import Header from "@/components/Header.vue";
 import ActionCard from "@/components/ActionCard.vue";
+import ReviewHeatmap from "@/components/ReviewHeatmap.vue";
 
 const router = useRouter();
 const srs = useSrsStore();
@@ -41,7 +42,13 @@ function goToReview() {
     <div class="flex flex-col gap-4 p-6">
         <ActionCard title="Daily Review" description="Characters and rules scheduled for review today."
             :badge="reviewCount ? `${reviewCount} due` : undefined" :disabled="!reviewCount" variant="secondary"
-            @click="goToReview" />
+            @click="goToReview">
+            <template #footer v-if="srs.reviewHistory">
+                <div class="mt-4 pt-4 border-t">
+                    <ReviewHeatmap :data="srs.reviewHistory" :days="30" />
+                </div>
+            </template>
+        </ActionCard>
 
         <h1 class="text-xl font-semibold">Characters</h1>
 

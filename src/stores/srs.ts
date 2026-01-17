@@ -3,11 +3,12 @@ import type { SrsData, StudyItem } from "@/types";
 import { parseStudyItemId } from "@/lib/parseStudyItemId";
 
 const STORAGE_KEY = "thai-srs";
-const VERSION = "0.2";
+const VERSION = "0.3";
 
 export const useSrsStore = defineStore("srs", {
   state: () => ({
     items: {} as Record<string, SrsData>,
+    reviewHistory: {} as Record<string, number>, // YYYY-MM-DD -> count
   }),
 
   getters: {
@@ -34,6 +35,14 @@ export const useSrsStore = defineStore("srs", {
             !srs.suspended && srs.nextReviewAt && srs.nextReviewAt <= now
         )
         .map(([id]) => parseStudyItemId(id));
+    },
+
+    getMastery: (state) => {
+      return (id: string): "mastered" | "learning" | "new" => {
+        const item = state.items[id];
+        if (!item || !item.lastReviewedAt) return "new";
+        return (item.interval ?? 0) > 30 ? "mastered" : "learning";
+      };
     },
   },
 
@@ -73,7 +82,11 @@ export const useSrsStore = defineStore("srs", {
       // 3: Easy (Correct) -> Quality 5
       const quality = confidence === 0 ? 0 : confidence === 1 ? 3 : confidence === 2 ? 4 : 5;
       const now = Date.now();
+      const dateKey = new Date(now).toISOString().split('T')[0];
       const DAY = 1000 * 60 * 60 * 24;
+
+      // Update history
+      this.reviewHistory[dateKey] = (this.reviewHistory[dateKey] ?? 0) + 1;
 
       let { repetition = 0, interval = 0, easeFactor = 2.5 } = entry;
 
@@ -117,6 +130,7 @@ export const useSrsStore = defineStore("srs", {
         const data = JSON.parse(raw);
         if (data.version !== VERSION) return;
         this.items = data.items ?? {};
+        this.reviewHistory = data.reviewHistory ?? {};
       } catch {}
     },
 
@@ -126,6 +140,7 @@ export const useSrsStore = defineStore("srs", {
         JSON.stringify({
           version: VERSION,
           items: this.items,
+          reviewHistory: this.reviewHistory,
         })
       );
     },
