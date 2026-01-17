@@ -4,7 +4,7 @@ import Page from '@/components/page/Page.vue';
 </script>
 
 <template>
-    <Page title="Awards" show-back-button>
+    <Page title="Awards" withBack>
         <template #header />
         Coming soon...
     </Page>

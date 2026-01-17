@@ -7,9 +7,9 @@ const props = defineProps({
         type: String,
         required: false,
     },
-    showBackButton: {
-        type: Boolean,
-        default: true,
+    withBack: {
+        type: [Boolean, String],
+        default: false,
     },
     noScroll: {
         type: Boolean,
@@ -24,7 +24,7 @@ const props = defineProps({
         <header v-if="$slots.header">
             <slot name="header">
                 <!-- Default Header if slot not provided -->
-                <Header v-if="title" :title="title" :showBackButton="showBackButton" />
+                <Header v-if="title" :title="title" :withBack="withBack" />
             </slot>
         </header>
 
@@ -37,7 +37,7 @@ const props = defineProps({
         <footer v-if="$slots.footer">
             <slot name="footer">
                 <!-- Default Footer if slot not provided -->
-                <MenuNav />
+                <MenuNav class="border-t" />
             </slot>
         </footer>
     </div>

@@ -54,29 +54,6 @@ const router = useRouter()
                 <ReviewHeatmap :data="srs.reviewHistory" :days="70" />
             </div>
 
-            <div class="flex flex-col space-y-1 ">
-                <h1 class="text-xl font-semibold">Alphabet</h1>
-            </div>
-
-            <ActionCard title="Character Browser" description="See details about specific characters."
-                variant="secondary" @click="router.push({ name: 'alphabet.browser' })" />
-
-            <ActionCard title="Character Groups" description="See how characters are grouped together."
-                variant="secondary" @click="router.push({ name: 'alphabet.grouped' })" />
-
-            <ActionCard title="Character Flashcards" description="Study characters and their groupings."
-                variant="secondary" @click="router.push({ name: 'alphabet.study' })" />
-
-            <ActionCard title="Writing Practice" description="Practice writing Thai characters." variant="secondary"
-                @click="router.push({ name: 'alphabet.writing' })" />
-
-            <ActionCard title="Tone Rule Calculator" description="Explain tone rules for any Thai word."
-                variant="secondary" @click="router.push({ name: 'tone.calculator' })" />
-
-            <div class="flex flex-col space-y-1">
-                <h1 class="text-xl font-semibold">Words</h1>
-            </div>
-
             <ActionCard :title="`Word Bank (${vocab.words.length})`" description="Manage words that you'd
                 like to practice." variant="primary" @click="router.push({ name: 'words' })" />
 

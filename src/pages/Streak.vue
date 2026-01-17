@@ -4,7 +4,7 @@ import Page from '@/components/page/Page.vue';
 </script>
 
 <template>
-    <Page title="Streak" show-back-button>
+    <Page title="Streak" withBack>
         <template #header />
         Coming soon...
     </Page>

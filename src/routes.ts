@@ -95,6 +95,11 @@ const routes = [
     name: "streak",
     component: () => import("@/pages/Streak.vue"),
   },
+  {
+    path: "/alphabet",
+    name: "alphabet",
+    component: () => import("@/pages/Alphabet.vue"),
+  },
 ];
 
 export const router = createRouter({
