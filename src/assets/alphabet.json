@@ -807,7 +807,6 @@
     "character": "อ่",
     "name": "mai ayk",
     "type": "mark",
-    "ipa": "low",
     "example": "ไก่",
     "example_english": "chicken",
     "audio": "marks/mai-ayk.mp3"
@@ -816,7 +815,6 @@
     "character": "อ้",
     "name": "mai toh",
     "type": "mark",
-    "ipa": "falling",
     "example": "ข้าว",
     "example_english": "rice",
     "audio": "marks/mai-toh.mp3"
@@ -825,16 +823,14 @@
     "character": "อ๊",
     "name": "mai dtrii",
     "type": "mark",
-    "ipa": "high",
-    "example": "ม้า",
-    "example_english": "horse",
+    "example": "ม๊า",
+    "example_english": "mom",
     "audio": "marks/mai-dtrii.mp3"
   },
   {
     "character": "อ๋",
     "name": "mai jat dta waa",
     "type": "mark",
-    "ipa": "rising",
     "example": "ก๋วยเตี๋ยว",
     "example_english": "noodles",
     "audio": "marks/mai-jat-dta-waa.mp3"
