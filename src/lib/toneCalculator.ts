@@ -103,6 +103,7 @@ function segmentSyllables(text: string): string[] {
     if (
       buffer &&
       seenVowel &&
+      ch &&
       isThaiConsonant(ch) &&
       next &&
       (isThaiVowelChar(next) || isLeadingVowel(next))
@@ -114,7 +115,7 @@ function segmentSyllables(text: string): string[] {
 
     buffer += ch;
 
-    if (isThaiVowelChar(ch) || isLeadingVowel(ch)) {
+    if (ch && (isThaiVowelChar(ch) || isLeadingVowel(ch))) {
       seenVowel = true;
     }
   }
@@ -142,7 +143,7 @@ function calculateSyllableTone(
 ): ToneAnalysis {
   const chars = Array.from(syllable);
 
-  let initialConsonant: Alphabet | null = null;
+  let initialConsonant: Alphabet | null;
   let vowel: Alphabet | null = null;
   let finalConsonant: Alphabet | null = null;
   let toneMark: Alphabet | null = null;
@@ -167,8 +168,8 @@ function calculateSyllableTone(
           ({
             character: char,
             name: char,
-            type: "mark",
             class: "mid",
+            type: "mark",
             ipa: "",
             example: "",
             example_english: "",
@@ -195,7 +196,7 @@ function calculateSyllableTone(
   const leadingVowels = ["เ", "แ", "โ", "ใ", "ไ"];
   let index = 0;
 
-  if (leadingVowels.includes(chars[0])) index = 1;
+  if (chars[0] && leadingVowels.includes(chars[0])) index = 1;
 
   const c1 =
     alphabetCards.find(
@@ -207,7 +208,7 @@ function calculateSyllableTone(
       (c) => c.character === chars[index + 1] && c.type === "consonant"
     ) ?? null;
 
-  if (!c1 && !leadingVowels.includes(chars[0])) {
+  if (!c1 && chars[0] && !leadingVowels.includes(chars[0])) {
     explanation.push(
       "Unable to determine initial consonant. This syllable may require dictionary knowledge."
     );
@@ -305,7 +306,7 @@ function calculateSyllableTone(
   const finalConsonants: Alphabet[] = [];
 
   if (vowelIndex === -1) {
-    vowelIndex = leadingVowels.includes(chars[0]) ? 1 : 0;
+    vowelIndex = chars[0] && leadingVowels.includes(chars[0]) ? 1 : 0;
   }
 
   for (let i = cleanedChars.length - 1; i > vowelIndex; i--) {
@@ -319,7 +320,7 @@ function calculateSyllableTone(
   }
 
   if (finalConsonants.length > 0) {
-    finalConsonant = finalConsonants[0];
+    finalConsonant = finalConsonants[0]!;
 
     if (finalConsonants.length > 1) {
       explanation.push(
@@ -367,7 +368,11 @@ function calculateSyllableTone(
   if (
     finalConsonant?.final_consonant &&
     isLive &&
-    LIVE_FINAL_IPA.some((l) => finalConsonant.final_consonant.includes(l))
+    LIVE_FINAL_IPA.some(
+      (l) =>
+        finalConsonant.final_consonant &&
+        finalConsonant.final_consonant.includes(l)
+    )
   ) {
     explanation.push("Sonorant final consonant keeps the syllable live.");
   }

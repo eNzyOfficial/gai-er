@@ -40,7 +40,7 @@ export type Alphabet = {
   character: string;
   name: string;
   class: "mid" | "high" | "low";
-  type: "consonant" | "vowel" | "number";
+  type: "consonant" | "vowel" | "number" | "mark";
   is_live?: boolean;
   is_short?: boolean;
   ipa: string;
