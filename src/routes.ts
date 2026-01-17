@@ -26,6 +26,11 @@ const routes = [
     component: () => import("@/pages/AlphabetStudy.vue"),
   },
   {
+    path: "/tone-calculator",
+    name: "tone.calculator",
+    component: () => import("@/pages/ToneCalculator.vue"),
+  },
+  {
     path: "/alphabet/study/:group",
     name: "alphabet.study.group",
     component: () => import("@/pages/WordFlashCards.vue"),

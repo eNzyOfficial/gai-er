@@ -32,6 +32,9 @@ const router = useRouter()
         <ActionCard title="Character Flashcards" description="Study characters and their groupings." variant="secondary"
             @click="router.push({ name: 'alphabet.study' })" />
 
+        <ActionCard title="Tone Rule Calculator" description="Explain tone rules for any Thai word." variant="secondary"
+            @click="router.push({ name: 'tone.calculator' })" />
+
         <div class="flex flex-col space-y-1">
             <h1 class="text-xl font-semibold">Words</h1>
         </div>
