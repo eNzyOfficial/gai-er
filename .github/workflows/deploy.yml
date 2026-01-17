@@ -36,11 +36,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build
+      - name: Set base path
         run: |
           REPO_NAME=${GITHUB_REPOSITORY#*/}
           echo "VITE_BASE=/$REPO_NAME/" >> $GITHUB_ENV
-          pnpm build
+
+      - name: Build
+        run: pnpm build
+
+      - name: Debug base
+        run: echo "VITE_BASE=$VITE_BASE"
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
