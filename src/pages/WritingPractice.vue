@@ -10,7 +10,7 @@ import WritingCanvas from "@/components/WritingCanvas.vue";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import SessionSummary from "@/components/SessionSummary.vue";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 const alphabet = useAlphabetStore();
 const srs = useSrsStore();
