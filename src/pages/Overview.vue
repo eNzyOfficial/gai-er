@@ -35,7 +35,7 @@ const router = useRouter()
                 </div>
 
                 <div class="flex-1 text-center text-sm font-medium truncate">
-                    <h1 class="text-xl font-semibold text-gray-800">Homepage</h1>
+                    <h1 class="text-xl font-semibold text-gray-800">ไก่เอ๋อ</h1>
                 </div>
 
                 <div class="flex space-x-4 justify-end">
