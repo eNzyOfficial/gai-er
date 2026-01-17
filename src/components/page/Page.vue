@@ -19,7 +19,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <div class="flex flex-col min-h-screen">
+    <div class="flex flex-col h-full">
         <!-- Header Slot -->
         <header v-if="$slots.header">
             <slot name="header">
