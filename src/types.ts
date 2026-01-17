@@ -2,7 +2,7 @@ import type { VNode } from "vue";
 
 export type SrsData = {
   suspended?: boolean;
-  confidence?: 0 | 1 | 2 | null;
+  confidence?: 0 | 1 | 2 | 3 | null;
   repetition?: number;
   interval?: number; // days
   easeFactor?: number; // SM-2 EF

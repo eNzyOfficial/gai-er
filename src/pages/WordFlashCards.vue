@@ -32,7 +32,7 @@ const srs = useSrsStore();
 function handleKeydown(e: KeyboardEvent) {
     if (!study.queue.length || study.completed) return;
 
-    if (["1", "2", "3", " ", "s", "Enter"].includes(e.key)) {
+    if (["1", "2", "3", "4", " ", "s", "Enter"].includes(e.key)) {
         e.preventDefault();
     }
 
@@ -46,6 +46,7 @@ function handleKeydown(e: KeyboardEvent) {
     if (e.key === "1") study.grade(0);
     if (e.key === "2") study.grade(1);
     if (e.key === "3") study.grade(2);
+    if (e.key === "4") study.grade(3);
     if (e.key === "s") study.suspendCurrent();
 }
 
@@ -82,7 +83,8 @@ function buildStudyItems(): StudyItem[] {
         }
 
         case "review": {
-            return srs.dailyReviewItems.slice(0, MAX_CARDS);
+            // Mixed review: words and alphabet
+            return srs.dailyReviewItems.sort(() => Math.random() - 0.5).slice(0, MAX_CARDS);
         }
     }
 }
@@ -127,13 +129,18 @@ onUnmounted(() => {
                     </Button>
 
                     <Button size="lg" variant="outline" class="flex-1 flex justify-between" @click="study.grade(1)">
-                        <span>Good</span>
+                        <span>Hard</span>
                         <Kbd class="opacity-60">2</Kbd>
                     </Button>
 
-                    <Button size="lg" class="flex-1 flex justify-between" @click="study.grade(2)">
-                        <span>Easy</span>
+                    <Button size="lg" variant="outline" class="flex-1 flex justify-between" @click="study.grade(2)">
+                        <span>Good</span>
                         <Kbd class="opacity-60">3</Kbd>
+                    </Button>
+
+                    <Button size="lg" class="flex-1 flex justify-between" @click="study.grade(3)">
+                        <span>Easy</span>
+                        <Kbd class="opacity-60">4</Kbd>
                     </Button>
 
                     <Button size="lg" variant="ghost" class="w-full" @click="study.suspendCurrent">

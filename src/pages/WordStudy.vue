@@ -16,7 +16,7 @@ const srs = useSrsStore();
 const WORD_VARIANT = "TH_TO_EN" as const;
 
 const reviewCount = computed(() =>
-    srs.dueIds.filter(id => parseStudyItemId(id).entityType === "word").length
+    srs.dailyReviewItems.length
 );
 
 const newWords = computed(() =>

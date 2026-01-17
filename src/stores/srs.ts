@@ -63,10 +63,15 @@ export const useSrsStore = defineStore("srs", {
       this.save();
     },
 
-    grade(id: string, confidence: 0 | 1 | 2) {
+    grade(id: string, confidence: 0 | 1 | 2 | 3) {
       const entry = this.ensure(id);
 
-      const quality = confidence === 0 ? 2 : confidence === 1 ? 4 : 5;
+      // Map confidence to SM-2 quality (0-5)
+      // 0: Again (Wrong) -> Quality 0
+      // 1: Hard (Correct) -> Quality 3
+      // 2: Good (Correct) -> Quality 4
+      // 3: Easy (Correct) -> Quality 5
+      const quality = confidence === 0 ? 0 : confidence === 1 ? 3 : confidence === 2 ? 4 : 5;
       const now = Date.now();
       const DAY = 1000 * 60 * 60 * 24;
 

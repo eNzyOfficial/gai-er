@@ -59,13 +59,22 @@ function finish() {
                 </div> -->
 
                 <!-- Answer breakdown -->
-                <div class="grid grid-cols-3 gap-3 text-center text-sm">
+                <div class="grid grid-cols-4 gap-2 text-center text-sm">
                     <div class="rounded-md border p-2">
                         <div class="font-medium">
                             {{ study.stats.again }}
                         </div>
                         <div class="text-muted-foreground text-xs">
                             Again
+                        </div>
+                    </div>
+
+                    <div class="rounded-md border p-2">
+                        <div class="font-medium">
+                            {{ study.stats.hard }}
+                        </div>
+                        <div class="text-muted-foreground text-xs">
+                            Hard
                         </div>
                     </div>
 
