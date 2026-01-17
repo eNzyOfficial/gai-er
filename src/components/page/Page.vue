@@ -42,26 +42,3 @@ const props = defineProps({
         </footer>
     </div>
 </template>
-
-<style scoped>
-/* Add a dynamic height adjustment to avoid page overflow when the URL bar is visible */
-html,
-body {
-    height: 100%;
-    margin: 0;
-}
-
-.flex-col {
-    height: 100%;
-}
-
-.flex-1 {
-    height: calc(100vh - var(--url-bar-height, 0px));
-    /* Subtract URL bar height dynamically */
-}
-
-/* Safe area adjustments for devices with notches or UI interruptions */
-* {
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-}
-</style>
