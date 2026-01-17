@@ -34,7 +34,7 @@ export function useWordList(
 
       default:
         return result.sort((a, b) =>
-          smartCompare(a, b, srs.get("word", a.id), srs.get("word", b.id))
+          smartCompare(a, b, srs.get(a.id), srs.get(b.id))
         );
     }
   });

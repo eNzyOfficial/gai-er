@@ -4,14 +4,12 @@ import { useRouter } from "vue-router"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 
 const study = useStudyStore()
 const router = useRouter()
 
 function finish() {
-    study.reset()
     router.push({ name: "words.study" })
 }
 </script>
@@ -30,16 +28,16 @@ function finish() {
 
             <CardContent class="space-y-6">
                 <!-- Accuracy -->
-                <div class="space-y-2">
+                <!-- <div class="space-y-2">
                     <div class="flex justify-between text-sm font-medium">
                         <span>Accuracy</span>
                         <span>{{ (study.accuracy * 100).toFixed(0) }}%</span>
                     </div>
                     <Progress :model-value="study.accuracy * 100" />
-                </div>
+                </div> -->
 
                 <!-- Difficulty -->
-                <div class="space-y-2">
+                <!-- <div class="space-y-2">
                     <div class="flex justify-between text-sm font-medium">
                         <span>Difficulty</span>
                         <span>{{ (study.difficultyScore * 100).toFixed(0) }}%</span>
@@ -48,17 +46,17 @@ function finish() {
                     <p class="text-xs text-muted-foreground">
                         Higher means the session felt harder
                     </p>
-                </div>
+                </div> -->
 
                 <Separator />
 
                 <!-- Streak -->
-                <div class="flex justify-between text-sm">
+                <!-- <div class="flex justify-between text-sm">
                     <span>Best streak</span>
                     <span class="font-medium">
                         {{ study.maxStreak }}
                     </span>
-                </div>
+                </div> -->
 
                 <!-- Answer breakdown -->
                 <div class="grid grid-cols-3 gap-3 text-center text-sm">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, computed, watchEffect } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
@@ -24,29 +24,26 @@ const emit = defineEmits<{
     (e: 'update:open', value: boolean): void
 }>()
 
-watch(
-    () => [props.open, props.word],
-    ([open, word]) => {
-        if (!open) {
-            return
-        }
 
-        if (word) {
-            // edit mode
-            thai.value = word.thai
-            transliteration.value = word.transliteration
-            meaning.value = word.meaning
-            selectedCollectionIds.value = [...word.collectionIds]
-        } else {
-            // add mode
-            thai.value = ''
-            transliteration.value = ''
-            meaning.value = ''
-            selectedCollectionIds.value = []
-        }
-    },
-    { immediate: true }
-)
+watchEffect(() => {
+    if (!props.open) return
+
+    const word = props.word
+
+    if (word) {
+        // edit mode
+        thai.value = word.thai
+        transliteration.value = word.transliteration
+        meaning.value = word.meaning
+        selectedCollectionIds.value = [...word.collectionIds]
+    } else {
+        // add mode
+        thai.value = ''
+        transliteration.value = ''
+        meaning.value = ''
+        selectedCollectionIds.value = []
+    }
+})
 
 const openModel = computed({
     get: () => props.open,

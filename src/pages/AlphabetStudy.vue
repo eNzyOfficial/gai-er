@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { useVocabularyStore } from "@/stores/vocabulary";
-import { useSrsStore } from "@/stores/srs";
 import Header from "@/components/Header.vue";
 import ActionCard from "@/components/ActionCard.vue";
 
 const router = useRouter();
-const vocab = useVocabularyStore();
-const srs = useSrsStore();
 </script>
 
 <template>
