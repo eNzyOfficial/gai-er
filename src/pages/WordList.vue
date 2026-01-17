@@ -20,6 +20,8 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 import { useWordList } from '@/composables/useWordList'
 import Header from '@/components/Header.vue'
+import { useSrsStore } from '@/stores/srs'
+import { studyItemId } from '@/lib/studyItemId'
 
 type SortMode = 'smart' | 'newest' | 'alpha'
 // const confidenceLabels = ['Low', 'Medium', 'High']
@@ -28,6 +30,15 @@ const sortMode = ref<SortMode>('smart')
 const search = ref('')
 
 const vocab = useVocabularyStore()
+const srs = useSrsStore()
+
+function getMasteryColor(wordId: string) {
+    const id = studyItemId('word', wordId, 'TH_TO_EN');
+    const mastery = srs.getMastery(id);
+    if (mastery === 'mastered') return 'bg-emerald-500';
+    if (mastery === 'learning') return 'bg-blue-400';
+    return 'bg-slate-200 dark:bg-slate-700';
+}
 const { displayedWords } = useWordList(
     computed(() => vocab.words),
     search,
@@ -103,6 +114,7 @@ const collectionsById = computed(() =>
                 <Table>
                     <TableHeader>
                         <TableRow>
+                            <TableHead class="w-[50px]"></TableHead>
                             <TableHead>Thai</TableHead>
                             <TableHead>Transliteration</TableHead>
                             <TableHead>Meaning</TableHead>
@@ -113,13 +125,18 @@ const collectionsById = computed(() =>
                     </TableHeader>
                     <TableBody>
                         <TableRow v-if="!displayedWords.length">
-                            <TableCell colspan="6" class="h-32 text-center text-muted-foreground">
+                            <TableCell colspan="7" class="h-32 text-center text-muted-foreground">
                                 {{ search ? 'No matching words' : 'No words yet — unlock to add your first one'
                                 }}
                             </TableCell>
                         </TableRow>
 
                         <TableRow v-for="word in displayedWords" :key="word.id">
+                            <TableCell>
+                                <div class="flex items-center justify-center">
+                                    <div class="w-2 h-2 rounded-full" :class="getMasteryColor(word.id)"></div>
+                                </div>
+                            </TableCell>
                             <TableCell>{{ word.thai }}</TableCell>
                             <TableCell>{{ word.transliteration }}</TableCell>
                             <TableCell>{{ word.meaning }}</TableCell>

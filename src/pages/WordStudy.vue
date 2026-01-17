@@ -7,7 +7,7 @@ import { makeStudyItem } from "@/lib/makeStudyItem";
 import Header from "@/components/Header.vue";
 import CollectionCard from "@/components/CollectionCard.vue";
 import ActionCard from "@/components/ActionCard.vue";
-import { parseStudyItemId } from "@/lib/parseStudyItemId";
+import ReviewHeatmap from "@/components/ReviewHeatmap.vue";
 
 const router = useRouter();
 const vocab = useVocabularyStore();
@@ -16,7 +16,7 @@ const srs = useSrsStore();
 const WORD_VARIANT = "TH_TO_EN" as const;
 
 const reviewCount = computed(() =>
-    srs.dueIds.filter(id => parseStudyItemId(id).entityType === "word").length
+    srs.dailyReviewItems.length
 );
 
 const newWords = computed(() =>
@@ -25,6 +25,13 @@ const newWords = computed(() =>
 
         return !srs.get(item.id);
     })
+);
+
+const masteredCount = computed(() =>
+    vocab.words.filter(word => {
+        const id = makeStudyItem("word", word.id, WORD_VARIANT).id;
+        return srs.getMastery(id) === 'mastered';
+    }).length
 );
 
 function goToReview() {
@@ -53,10 +60,21 @@ function goToCollection(id: string) {
         <!-- Review Button -->
         <ActionCard title="Daily Review" description="Words you’ve studied before and are scheduled for review today."
             :badge="reviewCount ? `${reviewCount} due` : undefined" :disabled="!reviewCount" variant="secondary"
-            @click="goToReview" />
+            @click="goToReview">
+            <template #footer v-if="srs.reviewHistory">
+                <div class="mt-4 pt-4 border-t">
+                    <ReviewHeatmap :data="srs.reviewHistory" :days="30" />
+                </div>
+            </template>
+        </ActionCard>
 
         <ActionCard title="New Words" description="Words you haven’t studied yet. Start small and build over time."
             :badge="`${newWords.length} new`" :disabled="!newWords.length" variant="primary" @click="goToNew" />
+
+        <div v-if="masteredCount" class="flex items-center gap-2 px-1 text-sm text-muted-foreground">
+            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+            <span>{{ masteredCount }} words mastered</span>
+        </div>
 
         <!-- Collections -->
         <div class="flex flex-col gap-4">

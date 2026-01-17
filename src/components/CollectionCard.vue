@@ -19,6 +19,10 @@ const emit = defineEmits<{
                 <span class="font-medium text-xl">{{ collection.name }}</span>
 
                 <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                    <div v-if="collection.mastered" class="flex items-center gap-1">
+                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                        <span>{{ collection.mastered }} mastered</span>
+                    </div>
                     <span>{{ collection.studied }} / {{ collection.total }} studied</span>
                     <span v-if="collection.dueToday" class="text-destructive">
                         {{ collection.dueToday }} due

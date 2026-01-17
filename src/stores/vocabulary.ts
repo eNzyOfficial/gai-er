@@ -69,9 +69,10 @@ export const useVocabularyStore = defineStore("vocabulary", {
 
         let studied = 0;
         let dueToday = 0;
+        let mastered = 0;
 
         for (const word of words) {
-          const s = srs.get(word.id);
+          const s = srs.get(`word:${word.id}:TH_TO_EN`);
           if (!s) continue;
 
           studied++;
@@ -79,12 +80,17 @@ export const useVocabularyStore = defineStore("vocabulary", {
           if (s.nextReviewAt && s.nextReviewAt <= now) {
             dueToday++;
           }
+
+          if ((s.interval ?? 0) > 30) {
+            mastered++;
+          }
         }
 
         return {
           ...collection,
           total,
           studied,
+          mastered,
           progress: total === 0 ? 0 : studied / total,
           dueToday,
         };
@@ -111,7 +117,8 @@ export const useVocabularyStore = defineStore("vocabulary", {
 
       this.words = this.words.filter((w) => w.id !== id);
 
-      srs.delete(id);
+      srs.delete(`word:${id}:TH_TO_EN`);
+      srs.delete(`word:${id}:EN_TO_TH`);
 
       this.save();
     },

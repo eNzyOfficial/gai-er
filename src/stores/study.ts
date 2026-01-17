@@ -11,6 +11,7 @@ export const useStudyStore = defineStore("study", {
 
     stats: {
       again: 0,
+      hard: 0,
       good: 0,
       easy: 0,
       total: 0,
@@ -46,6 +47,7 @@ export const useStudyStore = defineStore("study", {
       this.completed = false;
       this.stats = {
         again: 0,
+        hard: 0,
         good: 0,
         easy: 0,
         total: 0,
@@ -80,7 +82,7 @@ export const useStudyStore = defineStore("study", {
       this.revealed = true;
     },
 
-    grade(confidence: 0 | 1 | 2) {
+    grade(confidence: 0 | 1 | 2 | 3) {
       const card = this.current;
       if (!card) return;
 
@@ -97,8 +99,9 @@ export const useStudyStore = defineStore("study", {
         this.stats.again++;
         this.stats.byKind[kind].again++;
       }
-      if (confidence === 1) this.stats.good++;
-      if (confidence === 2) this.stats.easy++;
+      if (confidence === 1) this.stats.hard++;
+      if (confidence === 2) this.stats.good++;
+      if (confidence === 3) this.stats.easy++;
 
       this.revealed = false;
       this.index++;
