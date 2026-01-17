@@ -13,7 +13,7 @@ const router = useRouter()
     <div class="flex flex-col space-y-4 p-4">
         <h1 class="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">ไก่เอ๋อ</h1>
 
-        <div class="flex flex-col space-y-1">
+        <div class="flex flex-col space-y-1 ">
             <h1 class="text-xl font-semibold">Alphabet</h1>
         </div>
 
