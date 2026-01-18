@@ -69,19 +69,19 @@ function initCard() {
         phase.value = 'draw';
     } else {
         phase.value = 'peek';
-        setTimeout(() => {
-            playAudio();
-        }, 300);
     }
     hintActive.value = shouldShowGhostByDefault.value;
 }
 
 function playAudio() {
     if (!currentCard.value) return;
+
     const char = alphabet.byCharacter(currentCard.value.studyItem.entityId);
+
     if (char?.audio) {
-        const audio = new Audio(`/audio/${char.audio}`);
-        audio.play().catch(e => console.error("Failed to play audio:", e));
+        const path = `/audio/female/${char.audio}`;
+        const audio = new Audio(path);
+        audio.play().catch(e => console.error("Failed to play audio:", path, e));
     }
 }
 

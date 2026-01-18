@@ -38,7 +38,7 @@ const routes = [
   {
     path: "/alphabet/study/:group",
     name: "alphabet.study.group",
-    component: () => import("@/pages/WordFlashCards.vue"),
+    component: () => import("@/pages/FlashCards.vue"),
     props: (route: RouteLocation) => ({
       mode: "alphabet",
       group: route.params.group,
@@ -57,19 +57,19 @@ const routes = [
   {
     path: "/words/study/new",
     name: "words.study.new",
-    component: () => import("@/pages/WordFlashCards.vue"),
+    component: () => import("@/pages/FlashCards.vue"),
     props: { mode: "new" },
   },
   {
     path: "/words/study/review",
     name: "words.study.review",
-    component: () => import("@/pages/WordFlashCards.vue"),
+    component: () => import("@/pages/FlashCards.vue"),
     props: { mode: "review" },
   },
   {
     path: "/words/study/collection/:collectionId",
     name: "words.study.collection",
-    component: () => import("@/pages/WordFlashCards.vue"),
+    component: () => import("@/pages/FlashCards.vue"),
     props: (route: RouteLocation) => ({
       mode: "collection",
       collectionId: route.params.collectionId,

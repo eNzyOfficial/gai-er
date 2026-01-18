@@ -5,7 +5,6 @@ import { useVocabularyStore } from "@/stores/vocabulary";
 import { useAlphabetStore } from "@/stores/alphabet";
 import { useSrsStore } from "@/stores/srs";
 import SessionSummary from "@/components/SessionSummary.vue";
-import Header from "@/components/Headerr.vue";
 import Flashcard from "@/components/Flashcard.vue";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,7 @@ import { buildFlashcard } from "@/lib/flashcardFactory";
 import { makeStudyItem } from "@/lib/makeStudyItem";
 import type { AlphabetGroup, StudyItem } from "@/types";
 import { alphabetGroupToVariant } from "@/lib/alphabetGroupToVariant";
+import Page from "@/components/page/Page.vue";
 
 const MAX_CARDS = 20;
 
@@ -106,10 +106,10 @@ onUnmounted(() => {
 
 
 <template>
-    <div class="h-screen flex flex-col bg-background">
-        <Header title="Flash Cards" back-to="words.study" />
+    <Page title="Flash Cards" with-back>
+        <template #header />
 
-        <div v-if="study.queue.length && study.current" class="flex flex-1 flex-col px-4 pt-4 pb-2 gap-4">
+        <div v-if="study.queue.length && study.current" class="flex flex-1 flex-col px-4 pt-4 pb-2 gap-4 h-full">
             <Card class="flex-1">
                 <CardContent class="flex items-center justify-center h-full">
                     <Flashcard :card="study.current" />
@@ -152,5 +152,5 @@ onUnmounted(() => {
         </div>
 
         <SessionSummary v-else-if="study.completed" />
-    </div>
+    </Page>
 </template>
