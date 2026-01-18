@@ -2,8 +2,6 @@
 import { useStudyStore } from "@/stores/study";
 import type { Flashcard } from "@/types";
 import { Separator } from "@/components/ui/separator";
-import { Pencil } from "lucide-vue-next";
-import { Button } from "@/components/ui/button";
 import { ref, watch } from "vue";
 
 const props = defineProps<{
