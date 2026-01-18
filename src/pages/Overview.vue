@@ -67,9 +67,9 @@ function getMasteryColor(wordId: string) {
                     </Button>
 
                     <Button variant="outline" as-child>
-                        <RouterLink :to="{ name: 'streak' }" class="flex items-center">
-                            <Flame class="text-amber-500" :class="{ 'fill-amber-500': srs.streak > 0 }" />
-                            <span>{{ srs.streak }}</span>
+                        <RouterLink :to="{ name: 'streak' }" class="flex items-center gap-1.5">
+                            <Flame class="w-5 h-5 text-orange-500" :class="{ 'fill-orange-500': srs.streak > 0 }" />
+                            <span class="font-bold text-base">{{ srs.streak }}</span>
                         </RouterLink>
                     </Button>
                 </div>

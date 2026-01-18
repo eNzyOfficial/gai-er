@@ -10,6 +10,7 @@ export const useSrsStore = defineStore("srs", {
   state: () => ({
     items: {} as Record<string, SrsData>,
     reviewHistory: {} as Record<string, number>, // YYYY-MM-DD -> count
+    longestStreak: 0,
   }),
 
   getters: {
@@ -48,15 +49,19 @@ export const useSrsStore = defineStore("srs", {
 
     streak: (state) => {
       const history = state.reviewHistory;
-      const dates = Object.keys(history).sort((a, b) => b.localeCompare(a));
-      if (dates.length === 0) return 0;
+      if (Object.keys(history).length === 0) return 0;
 
       const now = new Date();
-      const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-      
+      const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}-${String(now.getDate()).padStart(2, "0")}`;
+
       const yesterdayDate = new Date(now);
       yesterdayDate.setDate(now.getDate() - 1);
-      const yesterday = `${yesterdayDate.getFullYear()}-${String(yesterdayDate.getMonth() + 1).padStart(2, "0")}-${String(yesterdayDate.getDate()).padStart(2, "0")}`;
+      const yesterday = `${yesterdayDate.getFullYear()}-${String(
+        yesterdayDate.getMonth() + 1
+      ).padStart(2, "0")}-${String(yesterdayDate.getDate()).padStart(2, "0")}`;
 
       if (!history[today] && !history[yesterday]) return 0;
 
@@ -69,7 +74,9 @@ export const useSrsStore = defineStore("srs", {
       }
 
       while (true) {
-        const dateStr = `${curr.getFullYear()}-${String(curr.getMonth() + 1).padStart(2, "0")}-${String(curr.getDate()).padStart(2, "0")}`;
+        const dateStr = `${curr.getFullYear()}-${String(
+          curr.getMonth() + 1
+        ).padStart(2, "0")}-${String(curr.getDate()).padStart(2, "0")}`;
         if (history[dateStr] && history[dateStr]! > 0) {
           streak++;
           curr.setDate(curr.getDate() - 1);
@@ -81,10 +88,17 @@ export const useSrsStore = defineStore("srs", {
       return streak;
     },
 
+    totalDaysPracticed: (state) => {
+      return Object.values(state.reviewHistory).filter((count) => count > 0)
+        .length;
+    },
+
     alphabetMastery: (state) => {
       const alphabet = (useAlphabetStore() as any).cards;
       // Filter for both consonants and vowels
-      const eligible = alphabet.filter((c: any) => c.type === "consonant" || c.type === "vowel");
+      const eligible = alphabet.filter(
+        (c: any) => c.type === "consonant" || c.type === "vowel"
+      );
       const total = eligible.length;
       const mastered = eligible.filter((c: any) => {
         const id = `alphabet:${c.character}:sound`;
@@ -137,11 +151,19 @@ export const useSrsStore = defineStore("srs", {
       const quality =
         confidence === 0 ? 0 : confidence === 1 ? 3 : confidence === 2 ? 4 : 5;
       const now = Date.now();
-      const dateKey = `${new Date(now).getFullYear()}-${String(new Date(now).getMonth() + 1).padStart(2, "0")}-${String(new Date(now).getDate()).padStart(2, "0")}`;
+      const dateKey = `${new Date(now).getFullYear()}-${String(
+        new Date(now).getMonth() + 1
+      ).padStart(2, "0")}-${String(new Date(now).getDate()).padStart(2, "0")}`;
       const DAY = 1000 * 60 * 60 * 24;
 
       // Update history
       this.reviewHistory[dateKey] = (this.reviewHistory[dateKey] ?? 0) + 1;
+
+      // Update longest streak
+      const currentStreak = this.streak;
+      if (currentStreak > this.longestStreak) {
+        this.longestStreak = currentStreak;
+      }
 
       let { repetition = 0, interval = 0, easeFactor = 2.5 } = entry;
 
@@ -186,6 +208,7 @@ export const useSrsStore = defineStore("srs", {
         if (data.version !== VERSION) return;
         this.items = data.items ?? {};
         this.reviewHistory = data.reviewHistory ?? {};
+        this.longestStreak = data.longestStreak ?? 0;
       } catch {}
     },
 
@@ -196,6 +219,7 @@ export const useSrsStore = defineStore("srs", {
           version: VERSION,
           items: this.items,
           reviewHistory: this.reviewHistory,
+          longestStreak: this.longestStreak,
         })
       );
     },
