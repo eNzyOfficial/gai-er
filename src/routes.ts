@@ -21,11 +21,6 @@ const routes = [
     component: () => import("@/pages/AlphabetGrouped.vue"),
   },
   {
-    path: "/alphabet/study",
-    name: "alphabet.study",
-    component: () => import("@/pages/AlphabetStudy.vue"),
-  },
-  {
     path: "/alphabet/writing",
     name: "alphabet.writing",
     component: () => import("@/pages/FlashCards.vue"),
@@ -41,43 +36,38 @@ const routes = [
     component: () => import("@/pages/ToneCalculator.vue"),
   },
   {
-    path: "/alphabet/study/:group",
-    name: "alphabet.study.group",
-    component: () => import("@/pages/FlashCards.vue"),
-    props: (route: RouteLocation) => ({
-      mode: "alphabet",
-      group: route.params.group,
-    }),
-  },
-  {
     path: "/words",
     name: "words",
     component: () => import("@/pages/WordList.vue"),
   },
   {
-    path: "/words/study",
-    name: "words.study",
-    component: () => import("@/pages/WordStudy.vue"),
-  },
-  {
-    path: "/words/study/new",
+    path: "/flashcards/new",
     name: "words.study.new",
     component: () => import("@/pages/FlashCards.vue"),
     props: { mode: "new" },
   },
   {
-    path: "/words/study/review",
+    path: "/flashcards/review",
     name: "words.study.review",
     component: () => import("@/pages/FlashCards.vue"),
     props: { mode: "review" },
   },
   {
-    path: "/words/study/collection/:collectionId",
+    path: "/flashcards/collection/:collectionId",
     name: "words.study.collection",
     component: () => import("@/pages/FlashCards.vue"),
     props: (route: RouteLocation) => ({
       mode: "collection",
       collectionId: route.params.collectionId,
+    }),
+  },
+  {
+    path: "/flashcards/alphabet/:group",
+    name: "alphabet.study.group",
+    component: () => import("@/pages/FlashCards.vue"),
+    props: (route: RouteLocation) => ({
+      mode: "alphabet",
+      group: route.params.group,
     }),
   },
   {
@@ -99,11 +89,6 @@ const routes = [
     path: "/streak",
     name: "streak",
     component: () => import("@/pages/Streak.vue"),
-  },
-  {
-    path: "/alphabet",
-    name: "alphabet",
-    component: () => import("@/pages/Alphabet.vue"),
   },
 ];
 
