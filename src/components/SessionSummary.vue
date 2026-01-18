@@ -10,7 +10,7 @@ const study = useStudyStore()
 const router = useRouter()
 
 function finish() {
-    router.push({ name: "words.study" })
+    router.push({ name: "overview" })
 }
 </script>
 
@@ -119,7 +119,7 @@ function finish() {
 
                 <!-- CTA -->
                 <Button class="w-full" size="lg" @click="finish">
-                    Back to flashcards
+                    Back to overview
                 </Button>
             </CardContent>
         </Card>

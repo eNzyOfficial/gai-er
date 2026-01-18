@@ -50,7 +50,10 @@ const routes = [
     path: "/flashcards/review",
     name: "words.study.review",
     component: () => import("@/pages/FlashCards.vue"),
-    props: { mode: "review" },
+    props: (route: RouteLocation) => ({
+      mode: "review",
+      variantFilters: route.query.variants ? (route.query.variants as string).split(',') : undefined
+    }),
   },
   {
     path: "/flashcards/collection/:collectionId",
