@@ -2,10 +2,10 @@
 import { ref, computed } from "vue";
 import { useAlphabetStore } from "@/stores/alphabet";
 import { analyzeTone } from "@/lib/toneCalculator";
-import Header from "@/components/Headerr.vue";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import Page from "@/components/page/Page.vue";
 
 const alphabet = useAlphabetStore();
 const inputText = ref("");
@@ -18,10 +18,9 @@ const results = computed(() => {
 </script>
 
 <template>
-    <div class="h-screen flex flex-col bg-background">
-        <Header title="Tone Calculator" back-to="overview" />
-
-        <div class="p-6 space-y-6 overflow-y-auto">
+    <Page title="Tone Calculator" with-back>
+        <template #header />
+        <div class="p-6 space-y-6 overflow-y-auto h-full">
             <div class="space-y-2">
                 <p class="text-sm text-muted-foreground">
                     Enter a Thai word to see the tone rule analysis.
@@ -118,5 +117,5 @@ const results = computed(() => {
                 Input a Thai word to begin analysis.
             </div>
         </div>
-    </div>
+    </Page>
 </template>

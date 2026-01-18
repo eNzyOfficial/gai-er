@@ -27,11 +27,6 @@ watch(() => props.card.id, () => {
                 <component v-if="typeof card.prompt !== 'string'" :is="card.prompt" />
                 <template v-else>{{ card.prompt }}</template>
             </div>
-            <Button v-if="!study.revealed && !showCanvas" variant="ghost" size="icon"
-                class="absolute -top-2 -right-10 opacity-0 group-hover:opacity-100 transition-opacity"
-                @click="showCanvas = true" title="Practice Writing">
-                <Pencil class="w-4 h-4" />
-            </Button>
         </div>
 
         <Separator v-if="study.revealed" />

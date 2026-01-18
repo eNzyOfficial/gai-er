@@ -16,7 +16,7 @@ const emit = defineEmits<{
         @click="$emit('click')">
         <div class="grow flex flex-col gap-1">
             <div class="flex justify-between items-center">
-                <span class="font-medium text-xl">{{ collection.name }}</span>
+                <span class="font-medium text-base">{{ collection.name }}</span>
 
                 <div class="flex items-center gap-2 text-xs text-muted-foreground">
                     <div v-if="collection.mastered" class="flex items-center gap-1">

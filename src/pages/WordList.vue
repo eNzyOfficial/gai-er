@@ -65,7 +65,7 @@ const collectionsById = computed(() =>
 <template>
     <Page>
         <template #header>
-            <Header title="Word Bank" showBack>
+            <Header title="Word Bank">
                 <template #right>
                     <Button @click.prevent="editMode = !editMode" :variant="editMode ? 'destructive' : 'outline'"
                         size="icon-sm">
@@ -188,5 +188,7 @@ const collectionsById = computed(() =>
                 </div>
             </div>
         </div>
+
+      <template #footer />
     </Page>
 </template>

@@ -89,7 +89,7 @@ export function buildFlashcard(item: StudyItem): Flashcard {
         return {
           id: item.id,
           studyItem: item,
-          kind: "recall",
+          kind: "writing",
           prompt: h("div", { class: "flex flex-col gap-0 items-start" }, [
             h("div", { class: "text-2xl font-bold" }, char.name.replace("sara ", "")),
             h("div", { class: "text-xs text-muted-foreground flex gap-1.5" }, [

@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import type { SrsData, StudyItem } from "@/types";
 import { parseStudyItemId } from "@/lib/parseStudyItemId";
+import { useAlphabetStore } from "./alphabet";
 
 const STORAGE_KEY = "thai-srs";
 const VERSION = "0.3";
@@ -44,6 +45,58 @@ export const useSrsStore = defineStore("srs", {
         return (item.interval ?? 0) > 30 ? "mastered" : "learning";
       };
     },
+
+    streak: (state) => {
+      const history = state.reviewHistory;
+      const dates = Object.keys(history).sort((a, b) => b.localeCompare(a));
+      if (dates.length === 0) return 0;
+
+      const today = new Date().toISOString().split("T")[0];
+      const yesterday = new Date(Date.now() - 86400000)
+        .toISOString()
+        .split("T")[0];
+
+      // If no activity today and no activity yesterday, streak is 0
+      if (!history[today!] && !history[yesterday!]) return 0;
+
+      let streak = 0;
+      let curr = new Date();
+
+      // If today is not done, start checking from yesterday
+      if (!history[today!]) {
+        curr.setDate(curr.getDate() - 1);
+      }
+
+      while (true) {
+        const dateStr = curr.toISOString().split("T")[0];
+        if (history[dateStr!] && history[dateStr!]! > 0) {
+          streak++;
+          curr.setDate(curr.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+
+      return streak;
+    },
+
+    alphabetMastery: (state) => {
+      const alphabet = (useAlphabetStore() as any).cards;
+      // Filter for both consonants and vowels
+      const eligible = alphabet.filter((c: any) => c.type === "consonant" || c.type === "vowel");
+      const total = eligible.length;
+      const mastered = eligible.filter((c: any) => {
+        const id = `alphabet:${c.character}:sound`;
+        const item = state.items[id];
+        return item && (item.interval ?? 0) > 30;
+      }).length;
+
+      return {
+        mastered,
+        total,
+        percentage: total === 0 ? 0 : (mastered / total) * 100,
+      };
+    },
   },
 
   actions: {
@@ -80,9 +133,10 @@ export const useSrsStore = defineStore("srs", {
       // 1: Hard (Correct) -> Quality 3
       // 2: Good (Correct) -> Quality 4
       // 3: Easy (Correct) -> Quality 5
-      const quality = confidence === 0 ? 0 : confidence === 1 ? 3 : confidence === 2 ? 4 : 5;
+      const quality =
+        confidence === 0 ? 0 : confidence === 1 ? 3 : confidence === 2 ? 4 : 5;
       const now = Date.now();
-      const dateKey = new Date(now).toISOString().split('T')[0];
+      const dateKey = new Date(now).toISOString().split("T")[0];
       const DAY = 1000 * 60 * 60 * 24;
 
       // Update history

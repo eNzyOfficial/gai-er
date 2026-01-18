@@ -96,6 +96,13 @@ export const useVocabularyStore = defineStore("vocabulary", {
         };
       });
     },
+
+    recentlyAddedWords: (state) => {
+      return state.words
+        .slice()
+        .sort((a, b) => b.createdAt - a.createdAt)
+        .slice(0, 3);
+    },
   },
 
   actions: {
