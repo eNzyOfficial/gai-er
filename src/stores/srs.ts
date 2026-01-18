@@ -51,25 +51,26 @@ export const useSrsStore = defineStore("srs", {
       const dates = Object.keys(history).sort((a, b) => b.localeCompare(a));
       if (dates.length === 0) return 0;
 
-      const today = new Date().toISOString().split("T")[0];
-      const yesterday = new Date(Date.now() - 86400000)
-        .toISOString()
-        .split("T")[0];
+      const now = new Date();
+      const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+      
+      const yesterdayDate = new Date(now);
+      yesterdayDate.setDate(now.getDate() - 1);
+      const yesterday = `${yesterdayDate.getFullYear()}-${String(yesterdayDate.getMonth() + 1).padStart(2, "0")}-${String(yesterdayDate.getDate()).padStart(2, "0")}`;
 
-      // If no activity today and no activity yesterday, streak is 0
-      if (!history[today!] && !history[yesterday!]) return 0;
+      if (!history[today] && !history[yesterday]) return 0;
 
       let streak = 0;
       let curr = new Date();
 
       // If today is not done, start checking from yesterday
-      if (!history[today!]) {
+      if (!history[today]) {
         curr.setDate(curr.getDate() - 1);
       }
 
       while (true) {
-        const dateStr = curr.toISOString().split("T")[0];
-        if (history[dateStr!] && history[dateStr!]! > 0) {
+        const dateStr = `${curr.getFullYear()}-${String(curr.getMonth() + 1).padStart(2, "0")}-${String(curr.getDate()).padStart(2, "0")}`;
+        if (history[dateStr] && history[dateStr]! > 0) {
           streak++;
           curr.setDate(curr.getDate() - 1);
         } else {
@@ -136,11 +137,11 @@ export const useSrsStore = defineStore("srs", {
       const quality =
         confidence === 0 ? 0 : confidence === 1 ? 3 : confidence === 2 ? 4 : 5;
       const now = Date.now();
-      const dateKey = new Date(now).toISOString().split("T")[0];
+      const dateKey = `${new Date(now).getFullYear()}-${String(new Date(now).getMonth() + 1).padStart(2, "0")}-${String(new Date(now).getDate()).padStart(2, "0")}`;
       const DAY = 1000 * 60 * 60 * 24;
 
       // Update history
-      this.reviewHistory[dateKey!] = (this.reviewHistory[dateKey!] ?? 0) + 1;
+      this.reviewHistory[dateKey] = (this.reviewHistory[dateKey] ?? 0) + 1;
 
       let { repetition = 0, interval = 0, easeFactor = 2.5 } = entry;
 

@@ -30,7 +30,11 @@ const cotd = computed(() => {
   if (unmastered.length === 0) return null;
 
   // Stable random based on date
-  const dateStr = new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const dateStr = `${year}-${month}-${day}`;
   let hash = 0;
   for (let i = 0; i < dateStr!.length; i++) {
     hash = ((hash << 5) - hash) + dateStr!.charCodeAt(i);
@@ -147,7 +151,7 @@ function getMasteryColor(wordId: string) {
             <!-- Collections Section -->
             <section class="space-y-3">
                 <div class="flex items-center justify-between px-1">
-                    <h2 class="text-lg font-semibold">Study Collections</h2>
+                    <h2 class="text-lg font-semibold">Word Collections ({{ vocab.collectionsWithProgress.length }})</h2>
                     <Button variant="link" size="sm" as-child class="h-auto p-0">
                         <router-link :to="{ name: 'words' }" class="flex items-center gap-1">
                             <span>See all</span>
@@ -169,7 +173,7 @@ function getMasteryColor(wordId: string) {
             <!-- Recently Added Words -->
             <section class="space-y-3">
                 <div class="flex items-center justify-between px-1">
-                    <h2 class="text-lg font-semibold">Recently Added</h2>
+                    <h2 class="text-lg font-semibold">Recent Words ({{ vocab.recentlyAddedWords.length }})</h2>
                   <Button variant="link" size="sm" as-child class="h-auto p-0">
                     <router-link :to="{ name: 'words' }" class="flex items-center gap-1">
                       <span>Manage</span>

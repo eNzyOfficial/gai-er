@@ -21,7 +21,11 @@ interface Day {
 const days = computed<Day[]>(() => {
   const result: Day[] = [];
   const now = new Date();
-  const todayStr = now.toISOString().split('T')[0];
+  
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const todayStr = `${year}-${month}-${day}`;
   
   // Find Monday of the current week
   const dayOfWeek = now.getDay(); // 0 (Sun) to 6 (Sat)
@@ -36,13 +40,18 @@ const days = computed<Day[]>(() => {
   for (let i = 0; i < 7; i++) {
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
-    const dateStr = d.toISOString().split('T')[0];
+    
+    // Use local date for the key to match how srs store saves it
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const dateStr = `${year}-${month}-${day}`;
     
     result.push({
       name: dayNames[i]!,
-      date: dateStr!,
+      date: dateStr,
       dayOfMonth: d.getDate(),
-      checked: (srs.reviewHistory[dateStr!] ?? 0) > 0,
+      checked: (srs.reviewHistory[dateStr] ?? 0) > 0,
       isToday: dateStr === todayStr
     });
   }
@@ -51,8 +60,12 @@ const days = computed<Day[]>(() => {
 });
 
 const isTodayDone = computed(() => {
-  const todayStr = new Date().toISOString().split('T')[0];
-  return (srs.reviewHistory[todayStr!] ?? 0) > 0;
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const todayStr = `${year}-${month}-${day}`;
+  return (srs.reviewHistory[todayStr] ?? 0) > 0;
 });
 
 const dueCount = computed(() => srs.dailyReviewItems.length);
