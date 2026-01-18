@@ -4,10 +4,8 @@ import { useSrsStore } from '@/stores/srs';
 import { useVocabularyStore } from '@/stores/vocabulary';
 import Page from '@/components/page/Page.vue';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Button } from '@/components/ui/button';
-import { Flame, Trophy, Calendar, BarChart3, Target } from 'lucide-vue-next';
+import { Flame, Trophy, Calendar, BarChart3 } from 'lucide-vue-next';
 import { VisAxis, VisGroupedBar, VisXYContainer } from "@unovis/vue";
 import {
   ChartContainer,
@@ -92,13 +90,6 @@ const chartConfig = {
 };
 
 type ChartData = typeof last7DaysData.value[number];
-
-// --- Streak Goals ---
-const updateGoal = (goal: number) => {
-  srs.streakGoals.current = goal;
-  srs.save();
-};
-
 </script>
 
 <template>

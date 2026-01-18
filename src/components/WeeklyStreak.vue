@@ -1,6 +1,17 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer';
 import { useSrsStore } from '@/stores/srs';
 import { useVocabularyStore } from '@/stores/vocabulary';
 import { useRouter } from 'vue-router';
@@ -9,6 +20,52 @@ import { makeStudyItem } from '@/lib/makeStudyItem';
 const srs = useSrsStore();
 const vocab = useVocabularyStore();
 const router = useRouter();
+
+const showReviewDialog = ref(false);
+
+const availableOptions = computed(() => {
+  const reviews = srs.dailyReviewItems;
+  const options = [
+    { id: 'sound', label: 'Audio Recognition', description: 'Hear and identify characters', variants: ['sound'] },
+    { id: 'writing', label: 'Writing Practice', description: 'Draw characters from memory', variants: ['writing'] },
+    { id: 'meaning', label: 'Vocabulary', description: 'Thai to English / English to Thai', variants: ['TH_TO_EN', 'EN_TO_TH'] },
+    { id: 'rules', label: 'Linguistic Rules', description: 'Class, Live/Dead, Length', variants: ['class', 'live_dead', 'length', 'name'] },
+  ];
+
+  return options.filter(opt => 
+    reviews.some(item => opt.variants.includes(item.variant))
+  );
+});
+
+const selectedVariants = ref<string[]>([]);
+
+// Initialize selectedVariants when availableOptions changes or on mount
+watch(availableOptions, (newOptions) => {
+  selectedVariants.value = newOptions.map(o => o.id);
+}, { immediate: true });
+
+function toggleVariant(id: string) {
+  if (selectedVariants.value.includes(id)) {
+    selectedVariants.value = selectedVariants.value.filter(v => v !== id);
+  } else {
+    selectedVariants.value.push(id);
+  }
+}
+
+function startFilteredReview() {
+  showReviewDialog.value = false;
+  
+  // Only add variants to query if not all are selected
+  const query: any = {};
+  if (selectedVariants.value.length < availableOptions.value.length) {
+    query.variants = selectedVariants.value.join(',');
+  }
+
+  router.push({ 
+    name: 'words.study.review',
+    query
+  });
+}
 
 interface Day {
   name: string
@@ -70,6 +127,20 @@ const isTodayDone = computed(() => {
 
 const dueCount = computed(() => srs.dailyReviewItems.length);
 
+const filteredDueCount = computed(() => {
+  const reviews = srs.dailyReviewItems;
+  if (selectedVariants.value.length === availableOptions.value.length) return reviews.length;
+  
+  return reviews.filter(item => {
+    const v = item.variant;
+    if (selectedVariants.value.includes('sound') && v === 'sound') return true;
+    if (selectedVariants.value.includes('writing') && v === 'writing') return true;
+    if (selectedVariants.value.includes('meaning') && (v === 'TH_TO_EN' || v === 'EN_TO_TH')) return true;
+    if (selectedVariants.value.includes('rules') && ['class', 'live_dead', 'length', 'name'].includes(v)) return true;
+    return false;
+  }).length;
+});
+
 const newWordsCount = computed(() => 
   vocab.words.filter(word => {
     const item = makeStudyItem("word", word.id, "TH_TO_EN");
@@ -93,7 +164,7 @@ const buttonLabel = computed(() => {
 
 function handleAction() {
   if (dueCount.value > 0) {
-    router.push({ name: 'words.study.review' });
+    showReviewDialog.value = true;
   } else if (newWordsCount.value > 0) {
     router.push({ name: 'words.study.new' });
   } else {
@@ -137,6 +208,42 @@ function handleAction() {
         {{ buttonLabel }}
       </Button>
     </div>
+
+    <Drawer v-model:open="showReviewDialog">
+      <DrawerContent>
+        <div class="mx-auto w-full max-w-sm">
+          <DrawerHeader>
+            <DrawerTitle>Review Settings</DrawerTitle>
+            <DrawerDescription>Select what you'd like to include in this session.</DrawerDescription>
+          </DrawerHeader>
+          
+          <div class="p-4 pb-0 space-y-4">
+            <div v-for="option in availableOptions" :key="option.id" 
+                 class="flex items-start space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+                 @click="toggleVariant(option.id)">
+              <Checkbox :id="option.id" :model-value="selectedVariants.includes(option.id)" />
+              <div class="grid gap-1.5 leading-none">
+                <Label :for="option.id" class="text-sm font-bold leading-none cursor-pointer">
+                  {{ option.label }}
+                </Label>
+                <p class="text-xs text-muted-foreground">
+                  {{ option.description }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <DrawerFooter>
+            <Button @click="startFilteredReview" :disabled="selectedVariants.length === 0">
+              Start Review ({{ filteredDueCount }} items)
+            </Button>
+            <DrawerClose as-child>
+              <Button variant="outline">Cancel</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </div>
+      </DrawerContent>
+    </Drawer>
   </div>
 </template>
 

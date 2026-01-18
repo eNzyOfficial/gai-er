@@ -25,6 +25,7 @@ const props = defineProps<{
     collectionId?: string;
     group?: AlphabetGroup;
     variant?: StudyVariant;
+    variantFilters?: string[];
 }>();
 
 const study = useStudyStore();
@@ -191,7 +192,20 @@ function buildStudyItems(): StudyItem[] {
 
         case "review": {
             // Mixed review: words and alphabet
-            return srs.dailyReviewItems.sort(() => Math.random() - 0.5).slice(0, MAX_CARDS);
+            let items = srs.dailyReviewItems;
+
+            if (props.variantFilters && props.variantFilters.length > 0) {
+                items = items.filter(item => {
+                    const v = item.variant;
+                    if (props.variantFilters!.includes('sound') && v === 'sound') return true;
+                    if (props.variantFilters!.includes('writing') && v === 'writing') return true;
+                    if (props.variantFilters!.includes('meaning') && (v === 'TH_TO_EN' || v === 'EN_TO_TH')) return true;
+                    if (props.variantFilters!.includes('rules') && ['class', 'live_dead', 'length', 'name'].includes(v)) return true;
+                    return false;
+                });
+            }
+
+            return items.sort(() => Math.random() - 0.5).slice(0, MAX_CARDS);
         }
     }
 }
