@@ -28,7 +28,12 @@ const routes = [
   {
     path: "/alphabet/writing",
     name: "alphabet.writing",
-    component: () => import("@/pages/WritingPractice.vue"),
+    component: () => import("@/pages/FlashCards.vue"),
+    props: (route: RouteLocation) => ({
+      mode: "alphabet",
+      group: route.query.group || "consonant",
+      variant: "writing",
+    }),
   },
   {
     path: "/tone-calculator",

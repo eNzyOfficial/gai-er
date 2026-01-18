@@ -44,6 +44,38 @@ export const useSrsStore = defineStore("srs", {
         return (item.interval ?? 0) > 30 ? "mastered" : "learning";
       };
     },
+
+    streak: (state) => {
+      const history = state.reviewHistory;
+      const dates = Object.keys(history).sort((a, b) => b.localeCompare(a));
+      if (dates.length === 0) return 0;
+
+      const today = new Date().toISOString().split('T')[0];
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+      // If no activity today and no activity yesterday, streak is 0
+      if (!history[today] && !history[yesterday]) return 0;
+
+      let streak = 0;
+      let curr = new Date();
+      
+      // If today is not done, start checking from yesterday
+      if (!history[today]) {
+        curr.setDate(curr.getDate() - 1);
+      }
+
+      while (true) {
+        const dateStr = curr.toISOString().split('T')[0];
+        if (history[dateStr] && history[dateStr] > 0) {
+          streak++;
+          curr.setDate(curr.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+
+      return streak;
+    }
   },
 
   actions: {

@@ -20,6 +20,7 @@ export const useStudyStore = defineStore("study", {
         recognition: { total: 0, again: 0 },
         recall: { total: 0, again: 0 },
         audio: { total: 0, again: 0 },
+        writing: { total: 0, again: 0 },
       },
     },
   }),
@@ -55,6 +56,7 @@ export const useStudyStore = defineStore("study", {
           recognition: { total: 0, again: 0 },
           recall: { total: 0, again: 0 },
           audio: { total: 0, again: 0 },
+          writing: { total: 0, again: 0 },
         },
       };
     },

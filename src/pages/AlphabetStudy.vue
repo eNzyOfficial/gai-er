@@ -36,9 +36,8 @@ const getGroupReviewCount = (group: "consonant" | "vowel" | "class" | "live_dead
                 :badge="getGroupReviewCount('consonant') ? `${getGroupReviewCount('consonant')} due` : undefined"
                 @click="router.push({ name: 'alphabet.study.group', params: { group: 'consonant' } })" />
 
-            <ActionCard title="Vowels" description="Study vowel characters." variant="primary"
-                :badge="getGroupReviewCount('vowel') ? `${getGroupReviewCount('vowel')} due` : undefined"
-                @click="router.push({ name: 'alphabet.study.group', params: { group: 'vowel' } })" />
+            <ActionCard title="Writing" description="Practice writing characters."
+                @click="router.push({ name: 'alphabet.writing', query: { group: 'consonant' } })" />
 
             <h1 class="text-xl font-semibold">Rules</h1>
 

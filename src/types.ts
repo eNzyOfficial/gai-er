@@ -16,7 +16,7 @@ export type Flashcard = {
   studyItem: StudyItem;
   prompt: string | VNode;
   answer: string | VNode;
-  kind?: "recognition" | "recall" | "audio";
+  kind?: "recognition" | "recall" | "audio" | "writing";
 };
 
 export type WordCollection = {

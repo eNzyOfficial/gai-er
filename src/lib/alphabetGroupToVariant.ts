@@ -11,6 +11,6 @@ export function alphabetGroupToVariant(group: AlphabetGroup): AlphabetVariant {
     case "consonant":
     case "vowel":
     case "number":
-      return "sound"; // or "name" depending on your pedagogy
+      return "writing";
   }
 }

@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import ActionCard from '@/components/ActionCard.vue';
-import ReviewHeatmap from '@/components/ReviewHeatmap.vue';
-import { useVocabularyStore } from '@/stores/vocabulary'
-import { useSrsStore } from '@/stores/srs'
-import { useRouter } from "vue-router";
 import Page from '@/components/page/Page.vue';
-import { Award, Flame, User } from 'lucide-vue-next';
+import { Award, ChevronRight, Flame, User } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
+import WeeklyStreak from "@/components/WeeklyStreak.vue";
+import { useSrsStore } from '@/stores/srs';
+import { useVocabularyStore } from "@/stores/vocabulary.ts";
+import { useRouter } from "vue-router";
+import CollectionCard from '@/components/CollectionCard.vue';
 
-const vocab = useVocabularyStore()
-const srs = useSrsStore()
-const router = useRouter()
+const srs = useSrsStore();
+const vocab = useVocabularyStore();
+const router = useRouter();
 </script>
 
 <template>
@@ -28,8 +28,8 @@ const router = useRouter()
 
                     <Button variant="outline" as-child>
                         <RouterLink :to="{ name: 'streak' }" class="flex items-center">
-                            <Flame class="text-amber-500" />
-                            <span>1</span>
+                            <Flame class="text-amber-500" :class="{ 'fill-amber-500': srs.streak > 0 }" />
+                            <span>{{ srs.streak }}</span>
                         </RouterLink>
                     </Button>
                 </div>
@@ -49,17 +49,28 @@ const router = useRouter()
         </template>
 
         <div class="flex flex-col space-y-4 p-4">
-            <div class="bg-card border rounded-xl p-4 space-y-3">
-                <h2 class="text-sm font-medium text-muted-foreground">Activity</h2>
-                <ReviewHeatmap :data="srs.reviewHistory" :days="70" />
+            <WeeklyStreak />
+
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-semibold px-1">Collections ({{ vocab.collectionsWithProgress.length }})</h2>
+                    <Button variant="link" as-child>
+                        <router-link :to="{ name: 'words' }" class="flex gap-2">
+                            <span>See all</span>
+                            <ChevronRight />
+                        </router-link>
+                    </Button>
+                </div>
+
+                <div class="flex flex-col gap-3" v-if="vocab.collectionsWithProgress.length">
+                    <CollectionCard v-for="col in vocab.collectionsWithProgress.slice(0, 3)" :key="col.id"
+                        :collection="col"
+                        @click="router.push({ name: 'words.study.collection', params: { collectionId: col.id } })" />
+                </div>
+                <div v-else class="flex flex-col items-center justify-center gap-4 border rounded-md p-4">
+                    <p class="text-gray-500">No collections yet. Create one to start studying!</p>
+                </div>
             </div>
-
-            <ActionCard :title="`Word Bank (${vocab.words.length})`" description="Manage words that you'd
-                like to practice." variant="primary" @click="router.push({ name: 'words' })" />
-
-            <ActionCard title="Word Flashcards" description="Study words from the word bank."
-                :badge="srs.dailyReviewItems.length ? `${srs.dailyReviewItems.length} due` : undefined"
-                variant="secondary" @click="router.push({ name: 'words.study' })" />
         </div>
 
         <template #footer />
