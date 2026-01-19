@@ -2,6 +2,7 @@ import type { Flashcard, StudyItem } from "@/types";
 import { useVocabularyStore } from "@/stores/vocabulary";
 import { useAlphabetStore } from "@/stores/alphabet";
 import { h } from "vue";
+import AudioButton from "@/components/AudioButton.vue";
 
 export function buildFlashcard(item: StudyItem): Flashcard {
   const vocab = useVocabularyStore();
@@ -19,6 +20,7 @@ export function buildFlashcard(item: StudyItem): Flashcard {
           kind: "recall",
           prompt: word.meaning,
           answer: `${word.thai}\n${word.transliteration}`,
+          interaction: "reveal",
         };
 
       case "TH_TO_EN":
@@ -28,6 +30,7 @@ export function buildFlashcard(item: StudyItem): Flashcard {
           kind: "recognition",
           prompt: word.thai,
           answer: `${word.meaning}\n${word.transliteration}`,
+          interaction: "reveal",
         };
     }
   }
@@ -44,6 +47,7 @@ export function buildFlashcard(item: StudyItem): Flashcard {
           kind: "recognition",
           prompt: char.character,
           answer: char.name,
+          interaction: "reveal",
         };
 
       case "class":
@@ -53,6 +57,7 @@ export function buildFlashcard(item: StudyItem): Flashcard {
           kind: "recall",
           prompt: char.character,
           answer: char.class,
+          interaction: "reveal",
         };
 
       case "live_dead":
@@ -62,6 +67,7 @@ export function buildFlashcard(item: StudyItem): Flashcard {
           kind: "recall",
           prompt: char.character,
           answer: char.is_live ? "Live" : "Dead",
+          interaction: "reveal",
         };
 
       case "length":
@@ -71,6 +77,7 @@ export function buildFlashcard(item: StudyItem): Flashcard {
           kind: "recall",
           prompt: char.character,
           answer: char.is_short ? "Short" : "Long",
+          interaction: "reveal",
         };
 
       case "sound":
@@ -79,10 +86,12 @@ export function buildFlashcard(item: StudyItem): Flashcard {
           studyItem: item,
           kind: "audio",
           prompt: char.character,
-          answer: h("div", [
+          answer: h("div", { class: "flex flex-col gap-2 items-center" }, [
+            h(AudioButton, { path: char.audio, text: true }),
             h("div", char.ipa),
             h("div", { class: "text-muted-foreground" }, char.example),
           ]),
+          interaction: "listening",
         };
 
       case "writing":
@@ -90,8 +99,12 @@ export function buildFlashcard(item: StudyItem): Flashcard {
           id: item.id,
           studyItem: item,
           kind: "writing",
-          prompt: h("div", { class: "flex flex-col gap-0 items-start" }, [
-            h("div", { class: "text-2xl font-bold" }, char.name.replace("sara ", "")),
+          prompt: h("div", { class: "flex flex-col gap-0 items-center" }, [
+            h(
+              "div",
+              { class: "text-2xl font-bold" },
+              char.name.replace("sara ", ""),
+            ),
             h("div", { class: "text-xs text-muted-foreground flex gap-1.5" }, [
               h("span", char.ipa),
               h("span", { class: "opacity-50" }, "•"),
@@ -99,6 +112,7 @@ export function buildFlashcard(item: StudyItem): Flashcard {
             ]),
           ]),
           answer: char.character,
+          interaction: "writing",
         };
     }
   }
