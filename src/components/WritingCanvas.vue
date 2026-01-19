@@ -10,7 +10,7 @@ const props = defineProps<{
     lineWidth?: number;
     placeholder?: string;
     showControls?: boolean;
-    hintActive?: boolean;
+    canHint?: boolean;
     canDraw: boolean;
 }>();
 
@@ -18,6 +18,7 @@ const canvasRef = ref<HTMLCanvasElement | null>(null);
 const isDrawing = ref(false);
 const lastPos = ref({ x: 0, y: 0 });
 const history = ref<string[]>([]);
+const hintActive = ref<Boolean>(false);
 
 const emit = defineEmits(['stroke', 'clear', 'undo']);
 
@@ -123,11 +124,71 @@ onMounted(() => {
     }
 });
 
-defineExpose({ clear, undo });
+function exportImage(): string | null {
+    if (!canvasRef.value) return null
+
+    const source = canvasRef.value
+    const ctx = source.getContext('2d')
+    if (!ctx) return null
+
+    const { width, height } = source
+    const imageData = ctx.getImageData(0, 0, width, height)
+    const data = imageData.data
+
+    let minX = width
+    let minY = height
+    let maxX = 0
+    let maxY = 0
+    let hasPixels = false
+
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            const index = (y * width + x) * 4
+            const alpha = data[index + 3]
+
+            if (alpha && alpha > 0) {
+                hasPixels = true
+                if (x < minX) minX = x
+                if (y < minY) minY = y
+                if (x > maxX) maxX = x
+                if (y > maxY) maxY = y
+            }
+        }
+    }
+
+    if (!hasPixels) return null
+
+    const trimmedWidth = maxX - minX + 1
+    const trimmedHeight = maxY - minY + 1
+
+    const trimmedCanvas = document.createElement('canvas')
+    trimmedCanvas.width = trimmedWidth
+    trimmedCanvas.height = trimmedHeight
+
+    const trimmedCtx = trimmedCanvas.getContext('2d')
+    if (!trimmedCtx) return null
+
+    trimmedCtx.drawImage(
+        source,
+        minX,
+        minY,
+        trimmedWidth,
+        trimmedHeight,
+        0,
+        0,
+        trimmedWidth,
+        trimmedHeight
+    )
+
+    return trimmedCanvas.toDataURL('image/png')
+}
+
+
+defineExpose({ clear, undo, exportImage });
 </script>
 
 <template>
-    <div class="relative w-full h-full border rounded-md bg-white dark:bg-slate-950 overflow-hidden group">
+    <div class="relative w-full h-full rounded-md bg-white dark:bg-slate-950 overflow-hidden group">
         <div v-if="placeholder"
             class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 select-none text-[12em] sm:text-[17em] font-bold text-black dark:text-white transition-opacity duration-300"
             :class="{ 'opacity-5 dark:opacity-10': hintActive }">
@@ -146,6 +207,13 @@ defineExpose({ clear, undo });
             </Button>
             <Button variant="outline" size="icon" @click="clear" title="Clear">
                 <Eraser class="w-4 h-4" />
+            </Button>
+        </div>
+
+        <div class="absolute bottom-2 left-2 opacity-0 transition-opacity z-10"
+            :class="{ 'opacity-100 group-hover:opacity-100': canHint }" v-if="canHint">
+            <Button variant="outline" @click="hintActive = !hintActive">
+                <span>Hint</span>
             </Button>
         </div>
     </div>

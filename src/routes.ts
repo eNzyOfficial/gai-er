@@ -52,7 +52,9 @@ const routes = [
     component: () => import("@/pages/FlashCards.vue"),
     props: (route: RouteLocation) => ({
       mode: "review",
-      variantFilters: route.query.variants ? (route.query.variants as string).split(',') : undefined
+      variantFilters: route.query.variants
+        ? (route.query.variants as string).split(",")
+        : undefined,
     }),
   },
   {
@@ -76,22 +78,22 @@ const routes = [
   {
     path: "/profile",
     name: "profile",
-    component: () => import("@/pages/Profile.vue"),
+    component: () => import("@/pages/user/Profile.vue"),
   },
   {
     path: "/profile/settings",
     name: "profile.settings",
-    component: () => import("@/pages/Profile.vue"),
+    component: () => import("@/pages/user/Profile.vue"),
   },
   {
     path: "/awards",
     name: "awards",
-    component: () => import("@/pages/Awards.vue"),
+    component: () => import("@/pages/user/Awards.vue"),
   },
   {
     path: "/streak",
     name: "streak",
-    component: () => import("@/pages/Streak.vue"),
+    component: () => import("@/pages/user/Streak.vue"),
   },
 ];
 

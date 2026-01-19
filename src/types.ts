@@ -11,12 +11,16 @@ export type SrsData = {
   reviewCount?: number;
 };
 
+export type CardKind = "recognition" | "recall" | "audio" | "writing";
+export type CardInteraction = "reveal" | "writing" | "listening";
+
 export type Flashcard = {
   id: string;
   studyItem: StudyItem;
   prompt: string | VNode;
   answer: string | VNode;
-  kind?: "recognition" | "recall" | "audio" | "writing";
+  kind?: CardKind;
+  interaction: CardInteraction;
 };
 
 export type WordCollection = {
@@ -78,3 +82,5 @@ export type AlphabetGroup =
   | "class"
   | "live_dead"
   | "length";
+
+export type StudyMode = "new" | "review" | "collection" | "alphabet";

@@ -34,7 +34,7 @@ function goBack() {
 
 <template>
     <header
-        class="bg-background px-2 flex h-12 items-center supports-[padding:env(safe-area-inset-top)]:pt-[env(safe-area-inset-top)] border-b">
+        class="bg-background px-4 flex h-12 items-center supports-[padding:env(safe-area-inset-top)]:pt-[env(safe-area-inset-top)] border-b">
         <div class="w-10 flex items-center justify-start">
             <Button variant="ghost" size="icon" @click="goBack" v-if="withBack">
                 <ChevronLeft class="h-5 w-5" />
