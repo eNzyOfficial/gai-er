@@ -2,7 +2,6 @@
 import type { Flashcard } from '@/types'
 import { useStudyStore } from '@/stores/study'
 import { Button } from '@/components/ui/button'
-import { Volume2 } from 'lucide-vue-next'
 import RevealCard from './RevealCard.vue';
 import { computed } from 'vue';
 import { useAlphabetStore } from '@/stores/alphabet';

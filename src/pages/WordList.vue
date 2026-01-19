@@ -19,7 +19,6 @@ import Badge from '@/components/ui/badge/Badge.vue'
 import { Input } from '@/components/ui/input'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 import { useWordList } from '@/composables/useWordList'
-import Header from '@/components/Headerr.vue'
 import { useSrsStore } from '@/stores/srs'
 import { studyItemId } from '@/lib/studyItemId'
 import Page from '@/components/page/Page.vue'
@@ -189,6 +188,6 @@ const collectionsById = computed(() =>
             </div>
         </div>
 
-      <template #footer />
+        <template #footer />
     </Page>
 </template>
