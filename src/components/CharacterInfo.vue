@@ -6,6 +6,8 @@ import { computed } from 'vue';
 import InfoRow from './InfoRow.vue';
 import Separator from './ui/separator/Separator.vue';
 import AudioButton from './AudioButton.vue';
+import { Button } from './ui/button';
+import { Check, Plus, VolumeX, Volume2, RotateCcw } from 'lucide-vue-next';
 
 const props = defineProps<{
     character?: string
@@ -16,12 +18,52 @@ const srs = useSrsStore()
 
 const currentCharacter = computed(() => props.character ? alphabet.byCharacter(props.character) : null)
 
+const itemId = computed(() => currentCharacter.value ? studyItemId('alphabet', currentCharacter.value.character, 'sound') : null)
+const mastery = computed(() => itemId.value ? srs.getMastery(itemId.value) : 'new')
+const srsItem = computed(() => itemId.value ? srs.items[itemId.value] : null)
+
 function getMasteryColor(char: string) {
-    const id = studyItemId('alphabet', char, 'sound');
-    const mastery = srs.getMastery(id);
-    if (mastery === 'mastered') return 'bg-emerald-500';
-    if (mastery === 'learning') return 'bg-blue-400';
+    const m = char === currentCharacter.value?.character ? mastery.value : srs.getMastery(studyItemId('alphabet', char, 'sound'));
+    if (m === 'mastered') return 'bg-emerald-500';
+    if (m === 'learning') return 'bg-blue-400';
     return 'bg-slate-200 dark:bg-slate-700';
+}
+
+function addToSrs() {
+    if (itemId.value) {
+        srs.ensure(itemId.value);
+        srs.save();
+    }
+}
+
+function markAsMastered() {
+    if (itemId.value) {
+        const item = srs.ensure(itemId.value);
+        item.interval = 31; // Mastery threshold is > 30
+        item.lastReviewedAt = Date.now();
+        srs.save();
+    }
+}
+
+function resetProgress() {
+    if (itemId.value) {
+        const item = srs.ensure(itemId.value);
+        item.interval = 0;
+        item.repetition = 0;
+        item.lastReviewedAt = undefined;
+        item.nextReviewAt = Date.now();
+        srs.save();
+    }
+}
+
+function toggleSilence() {
+    if (itemId.value) {
+        if (srsItem.value?.suspended) {
+            srs.unsuspend(itemId.value);
+        } else {
+            srs.suspend(itemId.value);
+        }
+    }
 }
 </script>
 
@@ -38,7 +80,30 @@ function getMasteryColor(char: string) {
             </p>
         </div>
 
-        <AudioButton :path="currentCharacter?.audio" />
+        <div class="flex flex-wrap gap-2 justify-center">
+            <AudioButton :path="currentCharacter?.audio" />
+
+            <Button v-if="mastery === 'new'" size="sm" variant="outline" @click="addToSrs">
+                <Plus class="w-4 h-4 mr-2" />
+                Add to SRS
+            </Button>
+
+            <div v-else>
+                <Button v-if="mastery !== 'mastered'" size="sm" variant="outline" @click="markAsMastered">
+                    <Check class="w-4 h-4 mr-2" />
+                    Mark as Mastered
+                </Button>
+                <Button v-else size="sm" variant="ghost" @click="resetProgress">
+                    <RotateCcw class="w-4 h-4 mr-2" />
+                    Unmaster / Reset
+                </Button>
+
+                <Button v-if="mastery !== 'mastered'" size="sm" variant="outline" @click="toggleSilence">
+                    <component :is="srsItem?.suspended ? Volume2 : VolumeX" class="w-4 h-4 mr-2" />
+                    {{ srsItem?.suspended ? 'Unsilence' : 'Silence' }}
+                </Button>
+            </div>
+        </div>
 
         <Separator />
 
@@ -72,9 +137,7 @@ function getMasteryColor(char: string) {
                     <div class="flex items-center gap-2">
                         <div class="w-2 h-2 rounded-full" :class="getMasteryColor(currentCharacter!.character)">
                         </div>
-                        <span class="capitalize">{{ srs.getMastery(studyItemId('alphabet',
-                            currentCharacter!.character,
-                            'sound')) }}</span>
+                        <span class="capitalize">{{ mastery }}</span>
                     </div>
                 </div>
             </div>
