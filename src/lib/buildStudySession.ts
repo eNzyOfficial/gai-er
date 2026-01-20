@@ -58,13 +58,21 @@ export function buildStudySession(
     } else if (params.group) {
       // Alphabet practice
       const chars = alphabet.group(params.group);
+      const filteredChars = chars.filter((c) => {
+        const id = makeStudyItem("alphabet", c.character, "sound").id;
+        const mastery = srs.getMastery(id);
+        if (params.filter === "new") return mastery === "new";
+        if (params.filter === "srs_only") return mastery === "learning";
+        return true;
+      });
+
       const variants: AlphabetVariant[] =
         (params.variants as AlphabetVariant[]) ||
         (params.variant
           ? [params.variant as AlphabetVariant]
           : [alphabetGroupToVariant(params.group)]);
 
-      for (const char of chars) {
+      for (const char of filteredChars) {
         for (const v of variants) {
           items.push(makeStudyItem("alphabet", char.character, v));
         }
