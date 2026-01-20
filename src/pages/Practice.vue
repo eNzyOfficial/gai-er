@@ -7,6 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useVocabularyStore } from '@/stores/vocabulary';
+import { useAlphabetStore } from '@/stores/alphabet';
+import { useSrsStore } from '@/stores/srs';
+import { makeStudyItem } from '@/lib/makeStudyItem';
 import type { EntityType, AlphabetGroup, StudyVariant, AlphabetVariant } from '@/types';
 import { ChevronRight, Info, ALargeSmall, WholeWord, ChevronLeft } from 'lucide-vue-next';
 import TopicTile from '@/components/practice/TopicTile.vue';
@@ -26,6 +29,8 @@ import Separator from '@/components/ui/separator/Separator.vue';
 
 const router = useRouter();
 const vocab = useVocabularyStore();
+const alphabet = useAlphabetStore();
+const srs = useSrsStore();
 
 // --- Info Dialog State ---
 const infoDialog = ref<{ title: string; description: string } | null>(null);
@@ -100,6 +105,37 @@ const currentVariants = computed(() => {
         });
     }
     return [];
+});
+
+const wordCounts = computed(() => {
+    const words = target.value === 'all' ? vocab.words : vocab.wordsInCollection(target.value!);
+    const counts = {
+        all: words.length,
+        new: 0,
+        srs_only: 0
+    };
+    words.forEach(w => {
+        const hasSrs = srs.get(makeStudyItem('word', w.id, 'TH_TO_EN').id);
+        if (hasSrs) counts.srs_only++;
+        else counts.new++;
+    });
+    return counts;
+});
+
+const alphabetCounts = computed(() => {
+    if (topic.value !== 'alphabet' || !target.value) return { all: 0, new: 0, srs_only: 0 };
+    const chars = alphabet.group(target.value as AlphabetGroup);
+    const counts = {
+        all: chars.length,
+        new: 0,
+        srs_only: 0
+    };
+    chars.forEach(c => {
+        const mastery = srs.getMastery(makeStudyItem('alphabet', c.character, 'sound').id);
+        if (mastery === 'learning') counts.srs_only++;
+        else if (mastery === 'new') counts.new++;
+    });
+    return counts;
 });
 
 // --- Actions ---
@@ -247,9 +283,21 @@ function startPractice() {
                                 </div>
 
                                 <SegmentedControl v-model="filter" :options="[
-                                    { label: 'All', value: 'all' },
-                                    { label: 'New', value: 'new' },
-                                    { label: 'Review', value: 'srs_only' }
+                                    { label: `All (${wordCounts.all})`, value: 'all' },
+                                    { label: `New (${wordCounts.new})`, value: 'new' },
+                                    { label: `Review (${wordCounts.srs_only})`, value: 'srs_only' }
+                                ]" />
+                            </div>
+
+                            <div v-if="topic === 'alphabet'" class="space-y-4 border rounded-md p-4">
+                                <div class="flex items-center gap-2">
+                                    <Label class="text-sm font-medium">Which characters?</Label>
+                                </div>
+
+                                <SegmentedControl v-model="filter" :options="[
+                                    { label: `All (${alphabetCounts.all})`, value: 'all' },
+                                    { label: `New (${alphabetCounts.new})`, value: 'new' },
+                                    { label: `Learning (${alphabetCounts.srs_only})`, value: 'srs_only' }
                                 ]" />
                             </div>
 
