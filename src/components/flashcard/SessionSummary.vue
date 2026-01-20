@@ -9,8 +9,14 @@ import { Separator } from "@/components/ui/separator"
 const study = useStudyStore()
 const router = useRouter()
 
+const emit = defineEmits(['restart'])
+
 function finish() {
-    router.push({ name: "overview" })
+    if (study.practice) {
+        emit('restart')
+    } else {
+        router.push({ name: "overview" })
+    }
 }
 </script>
 
@@ -119,7 +125,8 @@ function finish() {
 
                 <!-- CTA -->
                 <Button class="w-full" size="lg" @click="finish">
-                    Back to overview
+                    <span v-if="study.practice">Finish Practice</span>
+                    <span v-else>Back to overview</span>
                 </Button>
             </CardContent>
         </Card>

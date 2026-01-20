@@ -22,6 +22,7 @@ import { useWordList } from '@/composables/useWordList'
 import { useSrsStore } from '@/stores/srs'
 import { studyItemId } from '@/lib/studyItemId'
 import Page from '@/components/page/Page.vue'
+import Header from '@/components/page/Header.vue'
 
 type SortMode = 'smart' | 'newest' | 'alpha'
 // const confidenceLabels = ['Low', 'Medium', 'High']

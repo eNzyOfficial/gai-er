@@ -5,6 +5,7 @@ import OverviewHeader from '@/components/overview/OverviewHeader.vue';
 import OverviewQuickActions from '@/components/overview/OverviewQuickActions.vue';
 import OverviewAlphabetMastery from '@/components/overview/OverviewAlphabetMastery.vue';
 import OverviewCollections from '@/components/overview/OverviewCollections.vue';
+import PwaUpdateBanner from '@/components/PwaUpdateBanner.vue';
 </script>
 
 <template>
@@ -14,6 +15,8 @@ import OverviewCollections from '@/components/overview/OverviewCollections.vue';
         </template>
 
         <div class="flex flex-col space-y-4 p-4">
+            <PwaUpdateBanner />
+
             <WeeklyStreak />
 
             <OverviewQuickActions />

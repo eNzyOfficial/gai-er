@@ -8,6 +8,8 @@ export const useStudyStore = defineStore("study", {
     index: 0,
     revealed: false,
     completed: false,
+    practice: false,
+    infinite: false,
 
     stats: {
       again: 0,
@@ -41,11 +43,13 @@ export const useStudyStore = defineStore("study", {
   },
 
   actions: {
-    start(cards: Flashcard[]) {
+    start(cards: Flashcard[], practice: boolean = false, infinite: boolean = false) {
       this.queue = cards;
       this.index = 0;
       this.revealed = false;
       this.completed = false;
+      this.practice = practice;
+      this.infinite = infinite;
       this.stats = {
         again: 0,
         hard: 0,
@@ -90,8 +94,10 @@ export const useStudyStore = defineStore("study", {
 
       const kind = card.kind ?? "recognition";
 
-      const srs = useSrsStore();
-      srs.grade(card.id, confidence);
+      if (!this.practice) {
+        const srs = useSrsStore();
+        srs.grade(card.id, confidence);
+      }
 
       this.stats.byKind[kind].total++;
 
@@ -100,6 +106,11 @@ export const useStudyStore = defineStore("study", {
       if (confidence === 0) {
         this.stats.again++;
         this.stats.byKind[kind].again++;
+
+        if (this.practice) {
+          // Re-queue for practice
+          this.queue.push(card);
+        }
       }
       if (confidence === 1) this.stats.hard++;
       if (confidence === 2) this.stats.good++;
@@ -109,7 +120,14 @@ export const useStudyStore = defineStore("study", {
       this.index++;
 
       if (this.index >= this.queue.length) {
-        this.completed = true;
+        if (this.infinite && this.queue.length > 0) {
+          // Reshuffle and restart if infinite
+          const newQueue = [...this.queue].sort(() => Math.random() - 0.5);
+          this.queue = newQueue;
+          this.index = 0;
+        } else {
+          this.completed = true;
+        }
       }
     },
   },

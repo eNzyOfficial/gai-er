@@ -14,11 +14,14 @@ import Header from "@/components/page/Header.vue";
 import ConfirmedButton from "@/components/ConfirmedButton.vue";
 
 const props = defineProps<{
-    mode: "new" | "review" | "collection" | "alphabet";
+    mode: "new" | "review" | "collection" | "alphabet" | "practice";
     collectionId?: string;
     group?: AlphabetGroup;
     variant?: StudyVariant;
     variantFilters?: string[];
+    variants?: StudyVariant[];
+    filter?: 'all' | 'new' | 'srs_only';
+    infinite?: boolean;
 }>();
 
 const study = useStudyStore();
@@ -29,12 +32,14 @@ onMounted(() => {
         collectionId: props.collectionId,
         group: props.group,
         variantFilters: props.variantFilters,
-        variant: props.variant
+        variant: props.variant,
+        variants: props.variants,
+        filter: props.filter,
     });
 
     const cards = items.map(buildFlashcard);
 
-    study.start(cards);
+    study.start(cards, props.mode === 'practice', props.infinite);
 });
 
 onUnmounted(() => {
@@ -44,11 +49,16 @@ onUnmounted(() => {
 
 
 <template>
-    <Page title="Flash Cards" with-back no-scroll>
+    <Page :title="mode === 'practice' ? 'Practice' : 'Flash Cards'" with-back no-scroll>
         <template #header>
-            <Header title="Flash Cards" with-back no-scroll>
+            <Header :title="mode === 'practice' ? 'Practice' : 'Flash Cards'" with-back no-scroll>
                 <template #right>
-                    <ConfirmedButton title="Suspend flashcard"
+                    <template v-if="mode === 'practice'">
+                        <Button variant="ghost" size="sm" @click="$router.back()">
+                            Exit
+                        </Button>
+                    </template>
+                    <ConfirmedButton v-else title="Suspend flashcard"
                         description="By suspending this card, it will no longer appear in your review list."
                         @confirm="study.suspendCurrent" v-slot="{ open }">
                         <Button size="sm" variant="outline" @click="open">

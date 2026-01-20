@@ -29,7 +29,7 @@ const props = defineProps({
         </header>
 
         <!-- Main Content Area -->
-        <div :class="noScroll ? 'flex-1 overflow-hidden' : 'flex-1 overflow-y-auto'">
+        <div :class="noScroll ? 'flex-1 overflow-hidden h-full' : 'flex-1 overflow-y-auto h-full'">
             <slot />
         </div>
 

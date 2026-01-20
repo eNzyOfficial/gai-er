@@ -35,6 +35,6 @@ const emit = defineEmits<{
             </div>
         </div>
 
-        <ChevronRight />
+        <ChevronRight class="w-4 h-4 text-muted-foreground" />
     </button>
 </template>

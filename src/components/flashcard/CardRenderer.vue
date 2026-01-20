@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { Flashcard } from '@/types'
-import WritingCard from './WritingCard.vue';
-import RevealCard from './RevealCard.vue';
-import ListeningCard from './ListeningCard.vue';
+import WritingCard from '@/components/flashcard/writing/WritingCard.vue';
+import RevealCard from '@/components/flashcard/reveal/RevealCard.vue';
+import ListeningCard from '@/components/flashcard/listening/ListeningCard.vue';
 
 defineProps<{ card: Flashcard }>()
 </script>

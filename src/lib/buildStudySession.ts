@@ -1,9 +1,11 @@
 import { useVocabularyStore } from "@/stores/vocabulary";
 import type {
   AlphabetGroup,
+  AlphabetVariant,
   StudyItem,
   StudyMode,
   StudyVariant,
+  WordVariant,
 } from "@/types";
 import { makeStudyItem } from "./makeStudyItem";
 import { useSrsStore } from "@/stores/srs";
@@ -12,17 +14,65 @@ import { useAlphabetStore } from "@/stores/alphabet";
 
 export function buildStudySession(
   params: {
-    mode: StudyMode;
+    mode: StudyMode | "practice";
     collectionId?: string;
     group?: AlphabetGroup;
     variant?: StudyVariant;
+    variants?: StudyVariant[];
     variantFilters?: string[];
+    filter?: "all" | "new" | "srs_only";
   },
   maxCards = 20,
 ): StudyItem[] {
   const vocab = useVocabularyStore();
   const srs = useSrsStore();
   const alphabet = useAlphabetStore();
+
+  if (params.mode === "practice") {
+    let items: StudyItem[] = [];
+
+    if (params.collectionId || !params.group) {
+      // Words practice
+      const words = params.collectionId
+        ? vocab.wordsInCollection(params.collectionId)
+        : vocab.words;
+
+      const filteredWords = words.filter((w) => {
+        const hasSrs = srs.get(makeStudyItem("word", w.id, "TH_TO_EN").id);
+        if (params.filter === "new") return !hasSrs;
+        if (params.filter === "srs_only") return !!hasSrs;
+        return true;
+      });
+
+      const variants: WordVariant[] = (params.variants as WordVariant[]) ||
+        (params.variant ? [params.variant as WordVariant] : [
+          "TH_TO_EN",
+          "EN_TO_TH",
+        ]);
+
+      for (const word of filteredWords) {
+        for (const v of variants) {
+          items.push(makeStudyItem("word", word.id, v));
+        }
+      }
+    } else if (params.group) {
+      // Alphabet practice
+      const chars = alphabet.group(params.group);
+      const variants: AlphabetVariant[] =
+        (params.variants as AlphabetVariant[]) ||
+        (params.variant
+          ? [params.variant as AlphabetVariant]
+          : [alphabetGroupToVariant(params.group)]);
+
+      for (const char of chars) {
+        for (const v of variants) {
+          items.push(makeStudyItem("alphabet", char.character, v));
+        }
+      }
+    }
+
+    return items.sort(() => Math.random() - 0.5);
+  }
 
   switch (params.mode) {
     case "new": {
@@ -56,7 +106,7 @@ export function buildStudySession(
       if (params.variantFilters && params.variantFilters.length > 0) {
         items = items.filter((item) => {
           const v = item.variant;
-          if (params.variantFilters!.includes("sound") && v === "sound")
+          if (params.variantFilters!.includes("sound") && (v === "sound" || v === "listening"))
             return true;
           if (params.variantFilters!.includes("writing") && v === "writing")
             return true;
