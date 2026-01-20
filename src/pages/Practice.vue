@@ -8,14 +8,50 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useVocabularyStore } from '@/stores/vocabulary';
 import type { EntityType, AlphabetGroup, StudyVariant, AlphabetVariant } from '@/types';
-import { BookOpen, Type, ChevronRight } from 'lucide-vue-next';
+import { ChevronRight, Info, ALargeSmall, WholeWord, ChevronLeft } from 'lucide-vue-next';
 import TopicTile from '@/components/practice/TopicTile.vue';
 import PickerRow from '@/components/practice/PickerRow.vue';
 import CollectionCard from '@/components/CollectionCard.vue';
 import SegmentedControl from '@/components/practice/SegmentedControl.vue';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import Separator from '@/components/ui/separator/Separator.vue';
 
 const router = useRouter();
 const vocab = useVocabularyStore();
+
+// --- Info Dialog State ---
+const infoDialog = ref<{ title: string; description: string } | null>(null);
+
+function showInfo(type: 'interaction' | 'words') {
+    if (type === 'interaction') {
+        infoDialog.value = {
+            title: 'Interaction Types',
+            description: 'Choose how you want to be tested. You can select multiple types to mix them during your session. For example, you can practice both translating Thai to English and English to Thai at the same time.'
+        };
+    } else if (type === 'words') {
+        infoDialog.value = {
+            title: 'Which words?',
+            description: 'Filter which words from your collection(s) should be included:\n\n• All: Every word in the selected scope.\n• New: Only words you haven\'t practiced yet.\n• Review: Only words that are due for SRS review.'
+        };
+    }
+}
+
+const currentStepDescription = computed(() => {
+    if (step.value === 1) return 'Practice lets you freely review vocabulary or alphabet without affecting your spaced repetition schedule.';
+    if (step.value === 2) {
+        if (topic.value === 'word') return 'Select a specific collection of words to practice, or choose "All words" to mix everything together.';
+        return 'Select a group of characters to practice. Consonants, vowels, and numbers have different sets of rules and properties to learn.';
+    }
+    return 'Fine-tune your session. Choose interaction types (e.g., Thai to English) and filter words based on your learning progress.';
+});
 
 // --- State ---
 const step = ref(1);
@@ -105,37 +141,51 @@ function startPractice() {
 <template>
     <Page>
         <div class="h-full flex flex-col gap-4 py-4">
-            <div class="flex flex-col gap px-4">
-                <p class="text-xs text-muted-foreground">
-                    Step {{ step }} of 3
-                </p>
-                <h2 class="text-lg font-semibold leading-tight">
-                    {{ step === 1
-                        ? 'What do you want to practice?'
-                        : step === 2
-                            ? (topic === 'word' ? 'Choose a collection' : 'Choose a group')
-                            : 'Configure session'
-                    }}
-                </h2>
+            <div class="flex items-center justify-between px-4 gap-4">
+                <button class="text-muted-foreground hover:text-muted-foreground/50" @click="step--" v-if="step > 1">
+                    <ChevronLeft />
+                </button>
+
+                <div class="grow flex flex-col gap-1">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs text-muted-foreground">
+                            Step {{ step }} of 3
+                        </p>
+                    </div>
+                    <h2 class="text-lg font-semibold leading-tight">
+                        {{ step === 1
+                            ? 'What do you want to practice?'
+                            : step === 2
+                                ? (topic === 'word' ? 'Choose a collection' : 'Choose a group')
+                                : 'Configure session'
+                        }}
+                    </h2>
+                </div>
             </div>
+
+            <Separator />
 
             <div class="flex-1 overflow-y-auto px-4">
                 <Transition name="step" mode="out-in">
-                    <div :key="step">
+                    <div :key="step" class="flex flex-col gap-4">
+                        <p class="border-l border-muted-foreground pl-4 text-xs text-muted-foreground leading-relaxed">
+                            {{ currentStepDescription }}
+                        </p>
+
                         <!-- Step 1: Topic -->
-                        <div v-if="step === 1" class="space-y-4">
+                        <div v-if="step === 1">
                             <div class="grid grid-cols-1 gap-4">
                                 <TopicTile @click="selectTopic('word')" title="Vocabulary"
                                     description="Practice words from your collections">
                                     <template #icon>
-                                        <BookOpen class="w-6 h-6" />
+                                        <WholeWord class="w-6 h-6" />
                                     </template>
                                 </TopicTile>
 
                                 <TopicTile @click="selectTopic('alphabet')" title="Alphabet"
                                     description="Practice consonants, vowels, and rules">
                                     <template #icon>
-                                        <Type class="w-6 h-6" />
+                                        <ALargeSmall class="w-6 h-6" />
                                     </template>
                                 </TopicTile>
                             </div>
@@ -163,8 +213,14 @@ function startPractice() {
 
                         <!-- Step 3: Interaction & Options -->
                         <div v-if="step === 3" class="flex flex-col space-y-4 h-full">
-                            <div class="flex flex-col gap-2 p-4 border rounded-md">
-                                <Label class="text-sm font-medium">Interaction Types</Label>
+                            <div class="flex flex-col gap-4 p-4 border rounded-md">
+                                <div class="flex items-center gap-2">
+                                    <Label class="text-sm font-medium">Interaction Types</Label>
+                                    <button @click="showInfo('interaction')"
+                                        class="text-muted-foreground hover:text-foreground transition-colors">
+                                        <Info class="w-4 h-4" />
+                                    </button>
+                                </div>
 
                                 <div class="flex flex-wrap gap-2">
                                     <Badge v-for="v in currentVariants" :key="v.value"
@@ -181,8 +237,14 @@ function startPractice() {
                                     types</p>
                             </div>
 
-                            <div v-if="topic === 'word'" class="space-y-2 border rounded-md p-4">
-                                <Label class="text-sm font-medium">Which words?</Label>
+                            <div v-if="topic === 'word'" class="space-y-4 border rounded-md p-4">
+                                <div class="flex items-center gap-2">
+                                    <Label class="text-sm font-medium">Which words?</Label>
+                                    <button @click="showInfo('words')"
+                                        class="text-muted-foreground hover:text-foreground transition-colors">
+                                        <Info class="w-4 h-4" />
+                                    </button>
+                                </div>
 
                                 <SegmentedControl v-model="filter" :options="[
                                     { label: 'All', value: 'all' },
@@ -204,19 +266,32 @@ function startPractice() {
                 </Transition>
             </div>
 
-            <div class="flex flex-col gap-2 px-4">
-                <Button @click="startPractice" v-if="step == 3">
+            <div class="flex flex-col gap-4 px-4" v-if="step == 3">
+                <p class="text-xs text-muted-foreground text-center">
+                    This session won’t affect your SRS progress.
+                </p>
+                <Button @click="startPractice">
                     Start Practice
-                </Button>
-
-                <Button variant="outline" @click="step--" v-if="step > 1">
-                    Back
                 </Button>
             </div>
         </div>
 
         <template #footer />
     </Page>
+
+    <AlertDialog :open="!!infoDialog" @update:open="val => !val && (infoDialog = null)">
+        <AlertDialogContent>
+            <AlertDialogHeader>
+                <AlertDialogTitle>{{ infoDialog?.title }}</AlertDialogTitle>
+                <AlertDialogDescription class="whitespace-pre-wrap">
+                    {{ infoDialog?.description }}
+                </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <AlertDialogAction @click="infoDialog = null">Close</AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
 </template>
 
 <style scoped>
