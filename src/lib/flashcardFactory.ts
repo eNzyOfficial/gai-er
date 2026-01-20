@@ -91,6 +91,16 @@ export function buildFlashcard(item: StudyItem): Flashcard {
             h("div", char.ipa),
             h("div", { class: "text-muted-foreground" }, char.example),
           ]),
+          interaction: "reveal",
+        };
+
+      case "listening":
+        return {
+          id: item.id,
+          studyItem: item,
+          kind: "audio",
+          prompt: "", // Prompt is empty because the user listens to the audio
+          answer: char.character,
           interaction: "listening",
         };
 

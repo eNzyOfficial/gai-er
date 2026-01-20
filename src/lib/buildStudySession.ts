@@ -106,7 +106,7 @@ export function buildStudySession(
       if (params.variantFilters && params.variantFilters.length > 0) {
         items = items.filter((item) => {
           const v = item.variant;
-          if (params.variantFilters!.includes("sound") && v === "sound")
+          if (params.variantFilters!.includes("sound") && (v === "sound" || v === "listening"))
             return true;
           if (params.variantFilters!.includes("writing") && v === "writing")
             return true;

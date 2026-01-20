@@ -68,6 +68,7 @@ export type WordVariant = "EN_TO_TH" | "TH_TO_EN";
 export type AlphabetVariant =
   | "name"
   | "sound"
+  | "listening"
   | "class"
   | "live_dead"
   | "length"
@@ -83,4 +84,4 @@ export type AlphabetGroup =
   | "live_dead"
   | "length";
 
-export type StudyMode = "new" | "review" | "collection" | "alphabet";
+export type StudyMode = "new" | "review" | "collection" | "alphabet" | "practice";

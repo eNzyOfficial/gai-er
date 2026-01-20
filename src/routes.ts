@@ -76,6 +76,21 @@ const routes = [
     }),
   },
   {
+    path: "/flashcards/practice",
+    name: "flashcards.practice",
+    component: () => import("@/pages/FlashCards.vue"),
+    props: (route: RouteLocation) => ({
+      mode: "practice",
+      collectionId: route.query.collectionId,
+      group: route.query.group,
+      variants: route.query.variants
+        ? (route.query.variants as string).split(",")
+        : undefined,
+      filter: route.query.filter,
+      infinite: route.query.infinite === "true",
+    }),
+  },
+  {
     path: "/practice",
     name: "practice",
     component: () => import("@/pages/Practice.vue"),
