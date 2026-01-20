@@ -42,7 +42,7 @@ export const useSrsStore = defineStore("srs", {
     getMastery: (state) => {
       return (id: string): "mastered" | "learning" | "new" => {
         const item = state.items[id];
-        if (!item || !item.lastReviewedAt) return "new";
+        if (!item) return "new";
         return (item.interval ?? 0) > 30 ? "mastered" : "learning";
       };
     },
@@ -123,6 +123,7 @@ export const useSrsStore = defineStore("srs", {
           interval: 0,
           easeFactor: 2.5,
           reviewCount: 0,
+          nextReviewAt: Date.now(),
         };
       }
       return this.items[id];

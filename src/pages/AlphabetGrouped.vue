@@ -5,12 +5,22 @@ import { useSrsStore } from "@/stores/srs";
 import { studyItemId } from "@/lib/studyItemId";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Page from "@/components/page/Page.vue";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import CharacterInfo from "@/components/CharacterInfo.vue";
 
 type GroupBy = "class" | "live_dead" | "length";
 
 const alphabet = useAlphabetStore();
 const srs = useSrsStore();
 const groupBy = ref<GroupBy>("class");
+
+const selectedCharacter = ref<string | null>(null);
+const isDrawerOpen = ref(false);
+
+function openCharacterInfo(char: string) {
+    selectedCharacter.value = char;
+    isDrawerOpen.value = true;
+}
 
 function getMasteryColor(char: string) {
     const id = studyItemId('alphabet', char, 'sound');
@@ -75,7 +85,8 @@ const grouped = computed(() => {
 
                     <div class="grid grid-cols-6 gap-1">
                         <div v-for="card in cards" :key="card.character"
-                            class="relative cursor-pointer p-2 border rounded text-center bg-card">
+                            class="relative cursor-pointer p-2 border rounded text-center bg-card"
+                            @click="openCharacterInfo(card.character)">
                             {{ card.character }}
                             <div class="absolute bottom-0.5 right-0.5 w-1 h-1 rounded-full"
                                 :class="getMasteryColor(card.character)"></div>
@@ -86,4 +97,12 @@ const grouped = computed(() => {
 
         </div>
     </Page>
+
+    <Drawer v-model:open="isDrawerOpen">
+        <DrawerContent>
+            <div class="p-6">
+                <CharacterInfo v-if="selectedCharacter" :character="selectedCharacter" />
+            </div>
+        </DrawerContent>
+    </Drawer>
 </template>
