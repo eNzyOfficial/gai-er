@@ -14,6 +14,7 @@ import {
   ChartTooltipContent,
   componentToString,
 } from "@/components/ui/chart";
+import ReviewHeatmap from '@/components/ReviewHeatmap.vue';
 
 const srs = useSrsStore();
 const vocab = useVocabularyStore();
@@ -36,36 +37,6 @@ const vocabMastery = computed(() => {
 
 // --- Contribution Chart (Heatmap) ---
 const year = new Date().getFullYear();
-const heatmapDays = computed(() => {
-  const result = [];
-  const startOfYear = new Date(year, 0, 1);
-
-  // Align with Monday
-  const firstDay = startOfYear.getDay(); // 0-6
-  const offset = firstDay === 0 ? 6 : firstDay - 1;
-  const startDate = new Date(startOfYear);
-  startDate.setDate(startOfYear.getDate() - offset);
-
-  const curr = new Date(startDate);
-  // We want to show a full grid, roughly 53 weeks
-  for (let i = 0; i < 7 * 53; i++) {
-    const yearVal = curr.getFullYear();
-    const monthVal = String(curr.getMonth() + 1).padStart(2, '0');
-    const dayVal = String(curr.getDate()).padStart(2, '0');
-    const dateStr = `${yearVal}-${monthVal}-${dayVal}`;
-    const count = srs.reviewHistory[dateStr] ?? 0;
-    const isThisYear = curr.getFullYear() === year;
-
-    result.push({
-      date: dateStr,
-      count,
-      isThisYear,
-      level: count === 0 ? 0 : count < 5 ? 1 : count < 20 ? 2 : count < 50 ? 3 : 4
-    });
-    curr.setDate(curr.getDate() + 1);
-  }
-  return result;
-});
 
 // --- Weekly Bar Chart ---
 const last7DaysData = computed(() => {
@@ -137,34 +108,8 @@ type ChartData = typeof last7DaysData.value[number];
           <CardDescription class="text-xs">Your consistency over the year</CardDescription>
         </CardHeader>
         <CardContent>
-          <div class="flex flex-col space-y-2">
-            <!-- Heatmap Grid -->
-            <div class="overflow-x-auto pb-2 scrollbar-hide">
-              <div class="grid grid-flow-col grid-rows-7 gap-0.5 auto-cols-max snap-x snap-mandatory">
-                <div v-for="day in heatmapDays" :key="day.date"
-                  class="w-2 h-2 sm:w-2.5 sm:h-2.5 snap-start rounded-[2px]" :class="[
-                    !day.isThisYear ? 'opacity-0' : '',
-                    day.level === 0 ? 'bg-muted' :
-                      day.level === 1 ? 'bg-emerald-100 dark:bg-emerald-900/30' :
-                        day.level === 2 ? 'bg-emerald-300 dark:bg-emerald-700/50' :
-                          day.level === 3 ? 'bg-emerald-500' : 'bg-emerald-700'
-                  ]" />
-              </div>
-            </div>
+          <ReviewHeatmap :year="new Date().getFullYear()" :review-history="srs.reviewHistory" />
 
-
-            <div class="flex justify-between items-center text-[10px] text-muted-foreground px-1">
-              <span>Less</span>
-              <div class="flex gap-0.5">
-                <div class="w-1.5 h-1.5 bg-muted rounded-[1px]"></div>
-                <div class="w-1.5 h-1.5 bg-emerald-100 dark:bg-emerald-900/30 rounded-[1px]"></div>
-                <div class="w-1.5 h-1.5 bg-emerald-300 dark:bg-emerald-700/50 rounded-[1px]"></div>
-                <div class="w-1.5 h-1.5 bg-emerald-500 rounded-[1px]"></div>
-                <div class="w-1.5 h-1.5 bg-emerald-700 rounded-[1px]"></div>
-              </div>
-              <span>More</span>
-            </div>
-          </div>
         </CardContent>
       </Card>
 
@@ -172,7 +117,7 @@ type ChartData = typeof last7DaysData.value[number];
       <div class="space-y-3">
         <h3 class="text-sm font-semibold px-1">Mastery Progress</h3>
         <Card>
-          <CardContent class="p-4 space-y-4">
+          <CardContent class="space-y-4">
             <div class="space-y-2">
               <div class="flex justify-between text-xs font-medium">
                 <span class="text-muted-foreground">Alphabet</span>
@@ -198,7 +143,7 @@ type ChartData = typeof last7DaysData.value[number];
           <CardDescription class="text-xs">Reviews completed in the last 7 days</CardDescription>
         </CardHeader>
         <CardContent class="px-2">
-          <ChartContainer :config="chartConfig" class="h-[200px] w-full">
+          <ChartContainer :config="chartConfig" class="h-50 w-full">
             <VisXYContainer :data="last7DaysData" :margin="{ left: -20, right: 10, top: 10, bottom: 10 }">
               <VisGroupedBar :x="(d: ChartData) => d.date" :y="(d: ChartData) => d.reviews" color="var(--primary)"
                 :bar-padding="0.2" :rounded-corners="4" />
@@ -225,14 +170,3 @@ type ChartData = typeof last7DaysData.value[number];
     </div>
   </Page>
 </template>
-
-<style scoped>
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-</style>

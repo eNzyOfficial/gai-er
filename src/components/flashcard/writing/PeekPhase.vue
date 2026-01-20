@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Flashcard } from '@/types'
 import { Button } from '@/components/ui/button'
-import AudioButton from '../AudioButton.vue';
+import AudioButton from '@/components/AudioButton.vue';
 import { computed } from 'vue';
 import { useAlphabetStore } from '@/stores/alphabet';
 

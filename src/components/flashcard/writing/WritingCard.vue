@@ -4,9 +4,9 @@ import { useStudyStore } from '@/stores/study'
 import { useSrsStore } from '@/stores/srs'
 import WritingCanvas from '@/components/WritingCanvas.vue'
 import type { Flashcard } from '@/types'
-import PeekPhase from './PeekPhase.vue'
-import DrawPhase from './DrawPhase.vue'
-import ReviewPhase from './ReviewPhase.vue'
+import PeekPhase from '@/components/flashcard/writing/PeekPhase.vue'
+import DrawPhase from '@/components/flashcard/writing/DrawPhase.vue'
+import ReviewPhase from '@/components/flashcard/writing/ReviewPhase.vue'
 
 type Phase = 'peek' | 'draw' | 'review'
 

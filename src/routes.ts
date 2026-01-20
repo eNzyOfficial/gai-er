@@ -76,6 +76,11 @@ const routes = [
     }),
   },
   {
+    path: "/practice",
+    name: "practice",
+    component: () => import("@/pages/Practice.vue"),
+  },
+  {
     path: "/profile",
     name: "profile",
     component: () => import("@/pages/user/Profile.vue"),
