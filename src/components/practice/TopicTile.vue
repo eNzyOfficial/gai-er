@@ -12,7 +12,7 @@ defineProps<{
            active:scale-[0.98] transition
            hover:bg-muted focus:outline-none flex justify-between items-center">
         <div class="flex items-center gap-4">
-            <div class="w-14 h-14 rounded-xl bg-primary/10
+            <div class="w-14 h-14 rounded-xl bg-primary/3
                flex items-center justify-center text-primary">
                 <slot name="icon" />
             </div>
