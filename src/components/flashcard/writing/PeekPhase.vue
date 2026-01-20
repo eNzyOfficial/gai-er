@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import type { Flashcard } from '@/types'
 import { Button } from '@/components/ui/button'
-import AudioButton from '@/components/AudioButton.vue';
 import { computed } from 'vue';
-import { useAlphabetStore } from '@/stores/alphabet';
 
 const props = defineProps<{ card: Flashcard }>()
 defineEmits<{ begin: [] }>()
-
-const alphabet = useAlphabetStore();
 
 const questionLabel = computed(() => {
     const item = props.card.studyItem;
@@ -29,8 +25,6 @@ const questionLabel = computed(() => {
 
 
         <component v-if="typeof card.prompt !== 'string'" :is="card.prompt" />
-
-        <AudioButton v-if="audioPath" :path="audioPath" />
 
         <Button class="w-full max-w-xs text-xl py-8 flex" @click="$emit('begin')">
             <span>Begin Writing</span>

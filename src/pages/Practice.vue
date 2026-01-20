@@ -2,15 +2,14 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import Page from '@/components/page/Page.vue';
-import Header from '@/components/page/Header.vue';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useVocabularyStore } from '@/stores/vocabulary';
-import type { EntityType, AlphabetGroup, StudyVariant } from '@/types';
-import { BookOpen, Type, ArrowRight, ArrowLeft } from 'lucide-vue-next';
+import type {EntityType, AlphabetGroup, StudyVariant, AlphabetVariant} from '@/types';
+import { BookOpen, Type, ArrowRight } from 'lucide-vue-next';
 
 const router = useRouter();
 const vocab = useVocabularyStore();
@@ -28,9 +27,6 @@ const alphabetGroups: { label: string; value: AlphabetGroup }[] = [
     { label: 'Consonants', value: 'consonant' },
     { label: 'Vowels', value: 'vowel' },
     { label: 'Numbers', value: 'number' },
-    { label: 'Class Rules', value: 'class' },
-    { label: 'Live/Dead', value: 'live_dead' },
-    { label: 'Length', value: 'length' },
 ];
 
 const wordVariants: { label: string; value: StudyVariant }[] = [
@@ -38,10 +34,10 @@ const wordVariants: { label: string; value: StudyVariant }[] = [
     { label: 'English → Thai', value: 'EN_TO_TH' },
 ];
 
-const alphabetVariants: { label: string; value: StudyVariant }[] = [
+const alphabetVariants: { label: string; value: AlphabetVariant }[] = [
     { label: 'Name', value: 'name' },
     { label: 'Writing', value: 'writing' },
-    { label: 'Sound/IPA', value: 'sound' },
+    { label: 'Sound', value: 'sound' },
     { label: 'Listening', value: 'listening' },
     { label: 'Class', value: 'class' },
     { label: 'Live/Dead', value: 'live_dead' },
@@ -50,7 +46,20 @@ const alphabetVariants: { label: string; value: StudyVariant }[] = [
 
 const currentVariants = computed(() => {
     if (topic.value === 'word') return wordVariants;
-    if (topic.value === 'alphabet') return alphabetVariants;
+    if (topic.value === 'alphabet') {
+        return alphabetVariants.filter(v => {
+            if (target.value === 'consonant') {
+                return v.value !== 'length';
+            }
+            if (target.value === 'vowel') {
+                return v.value !== 'live_dead' && v.value !== 'class';
+            }
+            if (target.value === 'number') {
+                return v.value !== 'live_dead' && v.value !== 'class' && v.value !== 'length';
+            }
+            return true;
+        });
+    }
     return [];
 });
 
@@ -87,15 +96,6 @@ function startPractice() {
             infinite: infinite.value.toString(),
         }
     });
-}
-
-function reset() {
-    isStarted.value = false;
-    study.$reset();
-    step.value = 1;
-    topic.value = null;
-    target.value = null;
-    selectedVariants.value = [];
 }
 </script>
 
