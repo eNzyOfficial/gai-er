@@ -20,7 +20,7 @@ export default defineConfig({
       devOptions: {
         enabled: true,
       },
-      registerType: "prompt",
+      registerType: "autoUpdate",
       includeAssets: [
         "favicon.ico",
         "apple-touch-icon.png",
