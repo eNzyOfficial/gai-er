@@ -4,7 +4,7 @@ import { Volume2, Square } from 'lucide-vue-next'
 import { computed, ref, watch, onUnmounted } from 'vue'
 
 const props = defineProps<{
-    path: string | null,
+    path?: string | null,
     text?: boolean
 }>()
 
