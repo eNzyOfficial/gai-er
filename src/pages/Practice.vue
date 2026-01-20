@@ -139,8 +139,8 @@ function startPractice() {
             <div v-if="step === 2" class="flex flex-col space-y-4 h-full">
                 <h2 class="text-xl font-bold">{{ topic === 'word' ? 'Select Collection' : 'Select Group' }}</h2>
 
-                <div class="flex-1">
-                    <div class="grid grid-cols-1 gap-2">
+                <div class="grow overflow-y-auto rounded-md">
+                    <div class="flex flex-col gap-2">
                         <template v-if="topic === 'word'">
                             <Button v-for="c in vocab.collections" :key="c.id" variant="outline"
                                 class="justify-between h-auto py-4 px-6 text-left" @click="selectTarget(c.id)">
