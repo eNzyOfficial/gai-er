@@ -8,14 +8,11 @@ const waitingVersion = ref<string | null>(null);
 const ignoredUntilReload = ref(false);
 
 const LAST_SEEN_KEY = "pwa:last-seen-version";
-const AUTO_UPDATE_DELAY = 2 * 60 * 1000;
 const UPDATE_CHECK_INTERVAL = 30 * 60 * 1000;
 
 let autoUpdateTimer: number | undefined;
 
 const updateSW = registerSW({
-  immediate: true,
-
   async onNeedRefresh() {
     if (ignoredUntilReload.value) return;
 
@@ -26,9 +23,7 @@ const updateSW = registerSW({
       showChangelog.value = true;
     }
 
-    autoUpdateTimer = window.setTimeout(() => {
-      updateSW();
-    }, AUTO_UPDATE_DELAY);
+    updateSW(true);
 
     try {
       const reg = await navigator.serviceWorker.getRegistration();
